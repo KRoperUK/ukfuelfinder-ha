@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Fuel Finder API support
+    url: https://www.developer.fuel-finder.service.gov.uk/contact-us
+    about: "Problems with API credentials, rate limits, or the data itself are handled by the Fuel Finder team, not this integration."
+  - name: Questions & discussions
+    url: https://github.com/KRoperUK/ukfuelfinder-ha/discussions
+    about: Ask questions about sensors, automations, or general usage here.

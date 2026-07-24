@@ -4,7 +4,7 @@ Thank you for your interest in contributing to the UK Fuel Finder Home Assistant
 
 ## Reporting Issues
 
-- Use the [GitHub issue tracker](https://github.com/mretallack/ukfuelfinder-ha/issues)
+- Use the [GitHub issue tracker](https://github.com/KRoperUK/ukfuelfinder-ha/issues)
 - Search existing issues before creating a new one
 - Include Home Assistant version, integration version, and logs
 - Describe steps to reproduce the issue
@@ -20,10 +20,16 @@ Thank you for your interest in contributing to the UK Fuel Finder Home Assistant
 
 3. Install development dependencies:
    ```bash
-   pip install -r requirements-dev.txt
+   pip install -r requirements_test.txt
    ```
 
-4. Create a branch for your changes:
+4. Install the pre-commit hooks (lint + type check on commit, tests with
+   coverage on push):
+   ```bash
+   pre-commit install --hook-type pre-commit --hook-type pre-push
+   ```
+
+5. Create a branch for your changes:
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -31,13 +37,13 @@ Thank you for your interest in contributing to the UK Fuel Finder Home Assistant
 ## Code Standards
 
 - Follow Home Assistant coding standards
-- Use type hints
+- Use type hints (checked with mypy)
 - Add docstrings to all functions and classes
 - Keep line length to 100 characters
-- Run code formatters before committing:
+- Use Ruff for linting and formatting (the pre-commit hooks run it automatically):
   ```bash
-  black custom_components tests
-  isort custom_components tests
+  ruff check custom_components tests
+  ruff format custom_components tests
   ```
 
 ## Testing
@@ -47,12 +53,14 @@ Thank you for your interest in contributing to the UK Fuel Finder Home Assistant
   ```bash
   pytest
   ```
-- Aim for >80% code coverage
+- Keep coverage at or above the enforced floor (currently 70%)
 
 ## Pull Request Process
 
 1. Update documentation if needed
-2. Add your changes to CHANGELOG.md
+2. Use a [Conventional Commits](https://www.conventionalcommits.org/) PR title
+   (e.g. `feat: add per-sensor location`) — CHANGELOG.md and versioning are
+   automated by release-please, so no manual changelog edits
 3. Ensure all tests pass
 4. Create a pull request with a clear description
 5. Link any related issues

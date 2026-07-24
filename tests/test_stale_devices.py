@@ -84,12 +84,12 @@ async def test_stale_device_removal_grace_period(hass, mock_client):
     from homeassistant.helpers import device_registry as dr
 
     device_registry = dr.async_get(hass)
-    device1 = device_registry.async_get_or_create(
+    device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, "12345")},
         name="Station 1",
     )
-    device2 = device_registry.async_get_or_create(
+    device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, "67890")},
         name="Station 2",

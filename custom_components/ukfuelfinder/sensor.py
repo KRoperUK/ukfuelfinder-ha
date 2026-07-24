@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
+from typing import Any
+
+from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -31,11 +33,11 @@ async def async_setup_entry(
         # Get selected fuel types from config (default to all for backward compatibility)
         selected_fuel_types = entry.data.get(CONF_FUEL_TYPES, FUEL_TYPES)
 
-        new_entities = []
+        new_entities: list[SensorEntity] = []
 
         # Create regular station sensors (filtered by fuel type)
         for station_id, station_data in coordinator.data["stations"].items():
-            for fuel_type in station_data["prices"].keys():
+            for fuel_type in station_data["prices"]:
                 # Skip unselected fuel types
                 if fuel_type not in selected_fuel_types:
                     continue
@@ -115,10 +117,10 @@ class UKFuelFinderSensor(CoordinatorEntity[UKFuelFinderCoordinator], SensorEntit
             return None
 
         # Convert pence to pounds
-        return round(price_pence / 100, 3)
+        return round(float(price_pence) / 100, 3)
 
     @property
-    def extra_state_attributes(self) -> dict[str, any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return additional attributes."""
         if not self.coordinator.data or "stations" not in self.coordinator.data:
             return {}
@@ -197,10 +199,10 @@ class UKFuelFinderCheapestSensor(CoordinatorEntity[UKFuelFinderCoordinator], Sen
         cheapest = self.coordinator.get_cheapest_fuel(self._fuel_type)
         if not cheapest:
             return None
-        return round(cheapest["price"] / 100, 3)
+        return round(float(cheapest["price"]) / 100, 3)
 
     @property
-    def extra_state_attributes(self) -> dict[str, any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return station attributes for the cheapest price."""
         cheapest = self.coordinator.get_cheapest_fuel(self._fuel_type)
         if not cheapest:

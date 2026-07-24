@@ -13,6 +13,16 @@
           "radius": "Search Radius (km)",
           "update_interval": "Update Interval (minutes)",
           "fuel_types": "Fuel Types to Track"
+        },
+        "data_description": {
+          "client_id": "From the Fuel Finder developer portal.",
+          "client_secret": "From the Fuel Finder developer portal. Stored locally.",
+          "environment": "Use \"production\" unless you have test environment credentials.",
+          "latitude": "Defaults to your Home Assistant location.",
+          "longitude": "Defaults to your Home Assistant location.",
+          "radius": "How far to search for stations, 0.1-50 km.",
+          "update_interval": "How often prices are refreshed, 5-1440 minutes.",
+          "fuel_types": "Sensors are only created for the selected fuel types."
         }
       },
       "reauth_confirm": {
@@ -21,6 +31,10 @@
         "data": {
           "client_id": "Client ID",
           "client_secret": "Client Secret"
+        },
+        "data_description": {
+          "client_id": "From the Fuel Finder developer portal.",
+          "client_secret": "From the Fuel Finder developer portal. Stored locally."
         }
       },
       "reconfigure": {
@@ -32,6 +46,13 @@
           "radius": "Search Radius (km)",
           "update_interval": "Update Interval (minutes)",
           "fuel_types": "Fuel Types to Track"
+        },
+        "data_description": {
+          "latitude": "Defaults to your Home Assistant location.",
+          "longitude": "Defaults to your Home Assistant location.",
+          "radius": "How far to search for stations, 0.1-50 km.",
+          "update_interval": "How often prices are refreshed, 5-1440 minutes.",
+          "fuel_types": "Sensors are only created for the selected fuel types."
         }
       }
     },

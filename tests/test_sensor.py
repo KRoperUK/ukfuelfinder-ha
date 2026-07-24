@@ -1,6 +1,7 @@
 """Test UK Fuel Finder sensor platform."""
 
-from unittest.mock import MagicMock, patch
+from datetime import UTC
+from unittest.mock import MagicMock
 
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -256,12 +257,12 @@ async def test_dynamic_station_addition(hass):
 
 async def test_sensor_includes_price_timestamp(hass, mock_coordinator):
     """Test sensor includes price_last_updated in attributes."""
-    from datetime import datetime, timezone
+    from datetime import datetime
 
     from custom_components.ukfuelfinder.sensor import UKFuelFinderSensor
 
     # Add timestamp to mock data
-    test_timestamp = datetime(2026, 2, 8, 12, 0, 0, tzinfo=timezone.utc)
+    test_timestamp = datetime(2026, 2, 8, 12, 0, 0, tzinfo=UTC)
     mock_coordinator.data["stations"]["12345"]["price_timestamps"] = {
         "e10": test_timestamp,
         "b7": test_timestamp,

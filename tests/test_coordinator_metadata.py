@@ -1,10 +1,7 @@
 """Test coordinator metadata and cheapest calculation."""
 
-from unittest.mock import MagicMock, patch
-
-import pytest
-
-from custom_components.ukfuelfinder.const import DOMAIN
+from datetime import UTC
+from unittest.mock import patch
 
 
 async def test_coordinator_get_cheapest_fuel(hass):
@@ -168,7 +165,7 @@ async def test_coordinator_metadata_fields(hass):
 
 async def test_coordinator_handles_missing_metadata(hass):
     """Test coordinator handles missing/None metadata gracefully."""
-    from ukfuelfinder.models import PFS, Location, PFSInfo
+    from ukfuelfinder.models import Location, PFSInfo
 
     from custom_components.ukfuelfinder.coordinator import UKFuelFinderCoordinator
 
@@ -222,7 +219,7 @@ async def test_coordinator_handles_missing_metadata(hass):
 
 async def test_coordinator_stores_price_timestamps(hass):
     """Test coordinator stores price_timestamps alongside prices."""
-    from datetime import datetime, timezone
+    from datetime import datetime
 
     from ukfuelfinder.models import PFS, FuelPrice, Location, PFSInfo
 
@@ -248,7 +245,7 @@ async def test_coordinator_stores_price_timestamps(hass):
     )
 
     # Create PFS with timestamp
-    test_timestamp = datetime(2026, 2, 8, 12, 0, 0, tzinfo=timezone.utc)
+    test_timestamp = datetime(2026, 2, 8, 12, 0, 0, tzinfo=UTC)
     mock_pfs = PFS(
         node_id="test123",
         mft_organisation_name="Test Org",

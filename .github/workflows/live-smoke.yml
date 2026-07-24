@@ -1,0 +1,53 @@
+name: Live smoke test
+
+# Gated live smoke test against the real UK Fuel Finder API. Unit tests mock the
+# ukfuelfinder client, so API-contract regressions (schema changes, auth drift,
+# missing-price edge cases) can't be caught by them — only a real account
+# confirms the API still behaves as the integration expects. Runs on demand and
+# nightly, never on PRs (protects secrets, respects the API rate limits).
+#
+# It is read-only. Without the credential secrets the live tests skip cleanly,
+# so a fork or an unconfigured repo sees a green, no-op run.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # 03:23 UTC daily (off the hour to avoid the scheduler rush).
+    - cron: "23 3 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-smoke
+  cancel-in-progress: true
+
+jobs:
+  live:
+    # Never run the scheduled job on forks — they don't have the secrets and it
+    # would just be a pointless (or confusingly skipped) run.
+    if: github.repository == 'KRoperUK/ukfuelfinder-ha'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements_test.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements_test.txt
+
+      - name: Run live smoke tests (read-only)
+        # The live_client fixture skips when its secrets are absent, so this is
+        # a green no-op without them. `-m live` overrides the default
+        # `-m 'not live'` deselection.
+        env:
+          FUEL_FINDER_CLIENT_ID: ${{ secrets.FUEL_FINDER_CLIENT_ID }}
+          FUEL_FINDER_CLIENT_SECRET: ${{ secrets.FUEL_FINDER_CLIENT_SECRET }}
+          FUEL_FINDER_ENVIRONMENT: ${{ secrets.FUEL_FINDER_ENVIRONMENT }}
+        run: pytest tests/test_api_integration.py -m live -o addopts= -v

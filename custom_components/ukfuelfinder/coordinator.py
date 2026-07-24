@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from datetime import timedelta
 from typing import Any
 
@@ -20,7 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 class UKFuelFinderCoordinator(DataUpdateCoordinator):
     """Class to manage fetching UK Fuel Finder data."""
 
-    def __init__(self, hass: HomeAssistant, entry_data: dict[str, Any]) -> None:
+    def __init__(self, hass: HomeAssistant, entry_data: Mapping[str, Any]) -> None:
         """Initialize coordinator."""
         self.entry_data = entry_data
         self.config_entry = None  # Set by __init__.py after coordinator creation

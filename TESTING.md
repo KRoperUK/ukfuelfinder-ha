@@ -25,13 +25,13 @@ tests/
 ### Install Dependencies
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements_test.txt
 ```
 
 ### Run All Unit Tests
 
 ```bash
-PYTHONPATH=. pytest tests/ -v -k "not integration"
+pytest tests/ -v -k "not integration"
 ```
 
 Expected output: **30 passed, 2 deselected**
@@ -39,13 +39,13 @@ Expected output: **30 passed, 2 deselected**
 ### Run Specific Test Files
 
 ```bash
-PYTHONPATH=. pytest tests/test_config_flow.py -v
-PYTHONPATH=. pytest tests/test_coordinator.py -v
-PYTHONPATH=. pytest tests/test_coordinator_metadata.py -v
-PYTHONPATH=. pytest tests/test_cheapest_sensor.py -v
-PYTHONPATH=. pytest tests/test_sensor.py -v
-PYTHONPATH=. pytest tests/test_init.py -v
-PYTHONPATH=. pytest tests/test_stale_devices.py -v
+pytest tests/test_config_flow.py -v
+pytest tests/test_coordinator.py -v
+pytest tests/test_coordinator_metadata.py -v
+pytest tests/test_cheapest_sensor.py -v
+pytest tests/test_sensor.py -v
+pytest tests/test_init.py -v
+pytest tests/test_stale_devices.py -v
 ```
 
 ### Run Integration Tests (Pytest)
@@ -55,7 +55,7 @@ Requires API credentials. These tests are blocked by pytest-socket in normal run
 ```bash
 export FUEL_FINDER_CLIENT_ID="your_client_id"
 export FUEL_FINDER_CLIENT_SECRET="your_client_secret"
-PYTHONPATH=. pytest tests/test_integration_simple.py -v -p no:socket
+pytest tests/test_integration_simple.py -v -p no:socket
 ```
 
 Expected output: **2 passed** (or 2 skipped if credentials not set)
@@ -172,31 +172,34 @@ Integration tests use real API calls (marked with `enable_socket`).
 
 ## Continuous Integration
 
-GitHub Actions workflow runs on push to dev/main branches:
+GitHub Actions runs on push/PR to main (see `.github/workflows/ci.yml`):
 
 ```yaml
-- name: Run black
-  run: black --check custom_components tests
+- name: Lint with ruff
+  run: ruff check --output-format=github custom_components/ tests/
 
-- name: Run isort
-  run: isort --check-only custom_components tests
+- name: Check formatting
+  run: ruff format --check custom_components/ tests/
 
-- name: Run tests
-  run: PYTHONPATH=. pytest tests/ -v -k "not integration"
+- name: Type check with mypy
+  run: mypy
+
+- name: Run tests with coverage
+  run: pytest tests/ --cov=custom_components/ukfuelfinder --cov-branch --cov-report=xml --cov-report=term-missing
 ```
 
-Expected: **30 passed, 2 deselected**
-
-Integration tests are excluded from CI as they require API credentials and make real network calls.
+HACS and hassfest validation also run in the same workflow. Live tests
+(`tests/test_api_integration.py`, marked `live`) are excluded from CI as they
+require API credentials and make real network calls; they run nightly in the
+`live-smoke.yml` workflow with repository secrets.
 
 ## Troubleshooting
 
 ### ModuleNotFoundError: No module named 'custom_components'
 
-Always use `PYTHONPATH=.` when running tests:
-```bash
-PYTHONPATH=. pytest tests/ -v
-```
+`pyproject.toml` sets `pythonpath = ["."]`, so running `pytest` from the
+repository root just works. If you see this error, check you are in the repo
+root and not inside `tests/`.
 
 ### Integration tests skipped
 
