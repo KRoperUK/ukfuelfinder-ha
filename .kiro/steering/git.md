@@ -13,29 +13,32 @@ When the user says:
 
 **Only run tests before pushing, not before committing.**
 
-When user requests "commit and push" or "push", run the full GitHub Actions workflow locally:
+The pre-commit hooks automate all of this (ruff + mypy on commit, pytest with
+coverage on push — install once with
+`pre-commit install --hook-type pre-commit --hook-type pre-push`). To run the
+full GitHub Actions workflow locally by hand:
 
-### 1. Format Code
+### 1. Lint & Format
 ```bash
-black custom_components tests
-isort custom_components tests
+ruff check custom_components tests
+ruff format --check custom_components tests
 ```
 
-### 2. Verify Formatting
+### 2. Type Check
 ```bash
-black --check custom_components tests
-isort --check-only custom_components tests
+mypy
 ```
 
 ### 3. Run Tests
 ```bash
-PYTHONPATH=. pytest tests/ -v -k "not integration"
+pytest tests/ -v
 ```
 
 ### 4. Check All Pass
-All three steps must pass before pushing:
-- ✅ black check: no files to reformat
-- ✅ isort check: imports correctly sorted
+All steps must pass before pushing:
+- ✅ ruff check: no lint errors
+- ✅ ruff format: no files to reformat
+- ✅ mypy: no type errors
 - ✅ pytest: all unit tests passing
 
 ## Workflow Examples

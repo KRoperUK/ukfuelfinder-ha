@@ -1,0 +1,70 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Gosod UK Fuel Finder",
+        "description": "Rhowch eich manylion API UK Fuel Finder a'ch gosodiadau lleoliad.",
+        "data": {
+          "client_id": "ID Cleient",
+          "client_secret": "Cyfrinach Cleient",
+          "environment": "Amgylchedd",
+          "latitude": "Lledred",
+          "longitude": "Hydred",
+          "radius": "Radiws chwilio (km)",
+          "update_interval": "Cyfnod diweddaru (munudau)",
+          "fuel_types": "Mathau o danwydd i'w olrhain"
+        },
+        "data_description": {
+          "client_id": "O borth datblygwyr Fuel Finder.",
+          "client_secret": "O borth datblygwyr Fuel Finder. Caiff ei gadw'n lleol.",
+          "environment": "Defnyddiwch \"production\" oni bai bod gennych fanylion yr amgylchedd prawf.",
+          "latitude": "Lleoliad eich Home Assistant yn ddiofyn.",
+          "longitude": "Lleoliad eich Home Assistant yn ddiofyn.",
+          "radius": "Pa mor bell i chwilio am orsafoedd, 0.1-50 km.",
+          "update_interval": "Pa mor aml y caiff prisiau eu diweddaru, 5-1440 munud.",
+          "fuel_types": "Dim ond ar gyfer y mathau o danwydd a ddewiswyd y crëir synwyryddion."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Ail-ddilysu UK Fuel Finder",
+        "description": "Mae angen diweddaru eich manylion API.",
+        "data": {
+          "client_id": "ID Cleient",
+          "client_secret": "Cyfrinach Cleient"
+        },
+        "data_description": {
+          "client_id": "O borth datblygwyr Fuel Finder.",
+          "client_secret": "O borth datblygwyr Fuel Finder. Caiff ei gadw'n lleol."
+        }
+      },
+      "reconfigure": {
+        "title": "Ailffurfweddu UK Fuel Finder",
+        "description": "Diweddarwch eich lleoliad, eich gosodiadau chwilio a'ch dewisiadau tanwydd.",
+        "data": {
+          "latitude": "Lledred",
+          "longitude": "Hydred",
+          "radius": "Radiws chwilio (km)",
+          "update_interval": "Cyfnod diweddaru (munudau)",
+          "fuel_types": "Mathau o danwydd i'w olrhain"
+        },
+        "data_description": {
+          "latitude": "Lleoliad eich Home Assistant yn ddiofyn.",
+          "longitude": "Lleoliad eich Home Assistant yn ddiofyn.",
+          "radius": "Pa mor bell i chwilio am orsafoedd, 0.1-50 km.",
+          "update_interval": "Pa mor aml y caiff prisiau eu diweddaru, 5-1440 munud.",
+          "fuel_types": "Dim ond ar gyfer y mathau o danwydd a ddewiswyd y crëir synwyryddion."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Wedi methu cysylltu â'r API UK Fuel Finder. Gwiriwch eich manylion.",
+      "invalid_auth": "Manylion dilysu annilys.",
+      "no_fuel_types": "Dewiswch o leiaf un math o danwydd i'w olrhain.",
+      "unknown": "Bu gwall annisgwyl."
+    },
+    "abort": {
+      "already_configured": "Mae'r cyfrif UK Fuel Finder hwn eisoes wedi'i ffurfweddu.",
+      "reconfigure_successful": "Ffurfweddiad wedi'i ddiweddaru'n llwyddiannus."
+    }
+  }
+}

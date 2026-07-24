@@ -4,6 +4,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+[![CI](https://github.com/KRoperUK/ukfuelfinder-ha/actions/workflows/ci.yml/badge.svg)](https://github.com/KRoperUK/ukfuelfinder-ha/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/KRoperUK/ukfuelfinder-ha/branch/main/graph/badge.svg)](https://codecov.io/gh/KRoperUK/ukfuelfinder-ha)
 
 A Home Assistant custom component that integrates with the UK Government Fuel Finder API to monitor fuel prices at nearby petrol stations.
 
@@ -39,7 +41,7 @@ A Home Assistant custom component that integrates with the UK Government Fuel Fi
 2. Go to "Integrations"
 3. Click the three dots menu (⋮) in the top right
 4. Select "Custom repositories"
-5. Add this repository URL: `https://github.com/mretallack/ukfuelfinder-ha`
+5. Add this repository URL: `https://github.com/KRoperUK/ukfuelfinder-ha`
 6. Select "Integration" as the category
 7. Click "Add"
 8. Find "UK Fuel Finder" in the list and click "Download"
@@ -321,7 +323,7 @@ The integration includes comprehensive unit and integration tests.
 
 **Install test dependencies:**
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements_test.txt
 ```
 
 **Run all unit tests:**
@@ -364,47 +366,25 @@ Contributions are welcome! Please:
 
 ## Release Procedure
 
-To create a new release:
+Releases are automated with [release-please](https://github.com/googleapis/release-please):
 
-1. **Update version in manifest.json:**
-   ```bash
-   # Edit custom_components/ukfuelfinder/manifest.json
-   # Change "version": "x.y.z" to new version
-   ```
+1. **Merge changes to `main`** using [Conventional Commits](https://www.conventionalcommits.org/)
+   (`feat:`, `fix:`, `chore:` — these drive the version bump and changelog).
+2. **release-please maintains a release PR** that bumps the version in
+   `custom_components/ukfuelfinder/manifest.json`, `const.py` and `pyproject.toml`,
+   and updates `CHANGELOG.md`.
+3. **Merge the release PR** — the git tag and GitHub release are created, and the
+   `ukfuelfinder.zip` HACS asset is built, uploaded and verified
+   (`.github/workflows/release-please.yml`).
 
-2. **Update CHANGELOG.md:**
-   - Add new version section with date
-   - Document all changes under Added/Changed/Fixed/Removed
-
-3. **Commit version bump:**
-   ```bash
-   git add custom_components/ukfuelfinder/manifest.json CHANGELOG.md
-   git commit -m "Release: Bump version to x.y.z"
-   ```
-
-4. **Create annotated tag:**
-   ```bash
-   git tag -a vx.y.z -m "Release vx.y.z
-
-   Brief description of changes.
-   See CHANGELOG.md for full details."
-   ```
-
-5. **Push to GitHub:**
-   ```bash
-   git push origin main
-   git push origin vx.y.z
-   ```
-
-6. **Create GitHub Release:**
-   - Go to GitHub repository → Releases → Draft a new release
-   - Select the tag (vx.y.z)
-   - Copy relevant CHANGELOG section to release notes
-   - Publish release
+PRs merged from this repository also get installable pre-release builds
+(`vX.Y.Z-pr.N.*` tags) and every push to `main` mints a release candidate
+(`vX.Y.Z-rc.N`), so in-progress work can be installed via HACS by enabling
+"Show beta versions".
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/mretallack/ukfuelfinder-ha/issues)
+- **Issues**: [GitHub Issues](https://github.com/KRoperUK/ukfuelfinder-ha/issues)
 - **API Support**: [Contact Fuel Finder Team](https://www.developer.fuel-finder.service.gov.uk/contact-us)
 
 ## License
@@ -413,6 +393,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
+- Originally created by [Mark Retallack](https://github.com/mretallack) — this is a maintained fork
 - Uses the [ukfuelfinder](https://github.com/mretallack/ukfuelfinder) Python library
 - Data provided by the UK Government Fuel Finder service
 - Fuel pump icon by [Freepik - Flaticon](https://www.flaticon.com/free-icon/fuel-pump_3815878)

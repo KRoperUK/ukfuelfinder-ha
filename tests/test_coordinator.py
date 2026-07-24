@@ -1,14 +1,11 @@
 """Test UK Fuel Finder coordinator."""
 
-from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
 import pytest
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import UpdateFailed
-from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.ukfuelfinder.const import DOMAIN
 from custom_components.ukfuelfinder.coordinator import UKFuelFinderCoordinator
 
 

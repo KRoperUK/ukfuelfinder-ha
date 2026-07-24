@@ -1,5 +1,6 @@
 """Test cheapest sensor functionality."""
 
+from datetime import UTC
 from unittest.mock import MagicMock
 
 import pytest
@@ -70,7 +71,6 @@ def mock_coordinator_with_prices():
 
 async def test_cheapest_sensor_finds_lowest_price(hass, mock_coordinator_with_prices):
     """Test cheapest sensor finds the lowest price."""
-    from custom_components.ukfuelfinder.coordinator import UKFuelFinderCoordinator
     from custom_components.ukfuelfinder.sensor import UKFuelFinderCheapestSensor
 
     # Add get_cheapest_fuel method to mock
@@ -240,12 +240,12 @@ async def test_cheapest_sensor_unique_id(hass, mock_coordinator_with_prices):
 
 async def test_cheapest_sensor_includes_timestamp(hass, mock_coordinator_with_prices):
     """Test cheapest sensor includes price_last_updated in attributes."""
-    from datetime import datetime, timezone
+    from datetime import datetime
 
     from custom_components.ukfuelfinder.sensor import UKFuelFinderCheapestSensor
 
     # Add timestamps to mock data
-    test_timestamp = datetime(2026, 2, 8, 12, 0, 0, tzinfo=timezone.utc)
+    test_timestamp = datetime(2026, 2, 8, 12, 0, 0, tzinfo=UTC)
     mock_coordinator_with_prices.data["stations"]["station1"]["price_timestamps"] = {
         "e10": test_timestamp,
         "b7": test_timestamp,

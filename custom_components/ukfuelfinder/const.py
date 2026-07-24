@@ -2,6 +2,9 @@
 
 DOMAIN = "ukfuelfinder"
 
+# Managed by release-please (and rewritten by dev builds) — keep the marker.
+VERSION = "1.5.2"  # x-release-please-version
+
 # Configuration keys
 CONF_ENVIRONMENT = "environment"
 CONF_RADIUS = "radius"

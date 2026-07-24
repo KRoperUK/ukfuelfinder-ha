@@ -40,9 +40,9 @@ def test_ukfuelfinder_library():
         if station.location:
             assert hasattr(station.location, "latitude"), "Location should have latitude"
             assert hasattr(station.location, "longitude"), "Location should have longitude"
-            assert hasattr(
-                station.location, "address_line_1"
-            ), "Location should have address_line_1"
+            assert hasattr(station.location, "address_line_1"), (
+                "Location should have address_line_1"
+            )
             assert hasattr(station.location, "city"), "Location should have city"
             assert hasattr(station.location, "postcode"), "Location should have postcode"
 

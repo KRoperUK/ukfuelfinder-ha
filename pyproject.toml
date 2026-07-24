@@ -1,16 +1,33 @@
+[project]
+name = "ukfuelfinder-ha"
+version = "1.5.2"
+description = "UK Fuel Finder custom integration for Home Assistant"
+requires-python = ">=3.13"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 norecursedirs = [".git", "testing_config", "test_config"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+# Live tests (marked `live`) hit the real Fuel Finder API and need credentials,
+# so they are deselected by default; the live-smoke workflow runs them
+# explicitly with `-m live`.
+# Make ``custom_components/`` importable in tests without PYTHONPATH env hacks.
+pythonpath = ["."]
+addopts = "-m 'not live' --tb=short"
 markers = [
     "enable_socket: marks tests that require network access",
+    "live: requires live Fuel Finder API credentials (deselect with -m 'not live')",
 ]
 
 [tool.coverage.run]
 source = ["custom_components/ukfuelfinder"]
 
 [tool.coverage.report]
+show_missing = true
+# Coverage floor enforced by pytest-cov in CI. Keep honest but not brittle —
+# raise it as coverage improves.
+fail_under = 70
 exclude_lines = [
     "pragma: no cover",
     "raise NotImplementedError",
@@ -19,16 +36,32 @@ exclude_lines = [
     "@abstractmethod",
 ]
 
-[tool.black]
+[tool.ruff]
+target-version = "py313"
 line-length = 100
-target-version = ['py311']
 
-[tool.isort]
-profile = "black"
-line_length = 100
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+]
+ignore = ["E501"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.13"
+# Scope to our own package; Home Assistant is imported for types only.
+files = ["custom_components/ukfuelfinder"]
+# Map the component to `custom_components.ukfuelfinder` (matching how pytest
+# imports it). Without this, mypy climbs the __init__.py chain and maps it to
+# top-level `ukfuelfinder`, shadowing the PyPI library of the same name and
+# breaking `from ukfuelfinder import FuelFinderClient` resolution.
+mypy_path = "."
+explicit_package_bases = true
 show_error_codes = true
 follow_imports = "silent"
 ignore_missing_imports = true

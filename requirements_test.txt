@@ -1,0 +1,14 @@
+pytest-homeassistant-custom-component
+
+# Additional test utilities
+pytest-cov
+pytest-xdist
+pytest-sugar
+python-dotenv
+
+# Linting & formatting (keep in sync with ci.yml and .pre-commit-config.yaml)
+ruff==0.16.0
+mypy==2.3.0
+
+# Component dependency (keep in sync with manifest.json requirements)
+ukfuelfinder==3.0.0

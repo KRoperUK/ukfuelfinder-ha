@@ -1,0 +1,70 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuration de UK Fuel Finder",
+        "description": "Saisissez vos identifiants API UK Fuel Finder et vos paramètres de localisation.",
+        "data": {
+          "client_id": "ID client",
+          "client_secret": "Secret client",
+          "environment": "Environnement",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius": "Rayon de recherche (km)",
+          "update_interval": "Intervalle de mise à jour (minutes)",
+          "fuel_types": "Types de carburant à suivre"
+        },
+        "data_description": {
+          "client_id": "Depuis le portail développeurs Fuel Finder.",
+          "client_secret": "Depuis le portail développeurs Fuel Finder. Stocké localement.",
+          "environment": "Utilisez « production » sauf si vous disposez d'identifiants de l'environnement de test.",
+          "latitude": "Par défaut, la position de votre Home Assistant.",
+          "longitude": "Par défaut, la position de votre Home Assistant.",
+          "radius": "Distance de recherche des stations-service, 0,1 à 50 km.",
+          "update_interval": "Fréquence d'actualisation des prix, 5 à 1440 minutes.",
+          "fuel_types": "Des capteurs ne sont créés que pour les types de carburant sélectionnés."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Réauthentifier UK Fuel Finder",
+        "description": "Vos identifiants API doivent être mis à jour.",
+        "data": {
+          "client_id": "ID client",
+          "client_secret": "Secret client"
+        },
+        "data_description": {
+          "client_id": "Depuis le portail développeurs Fuel Finder.",
+          "client_secret": "Depuis le portail développeurs Fuel Finder. Stocké localement."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigurer UK Fuel Finder",
+        "description": "Mettez à jour la localisation, les paramètres de recherche et les types de carburant.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius": "Rayon de recherche (km)",
+          "update_interval": "Intervalle de mise à jour (minutes)",
+          "fuel_types": "Types de carburant à suivre"
+        },
+        "data_description": {
+          "latitude": "Par défaut, la position de votre Home Assistant.",
+          "longitude": "Par défaut, la position de votre Home Assistant.",
+          "radius": "Distance de recherche des stations-service, 0,1 à 50 km.",
+          "update_interval": "Fréquence d'actualisation des prix, 5 à 1440 minutes.",
+          "fuel_types": "Des capteurs ne sont créés que pour les types de carburant sélectionnés."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Échec de connexion à l'API UK Fuel Finder. Veuillez vérifier vos identifiants.",
+      "invalid_auth": "Identifiants d'authentification invalides.",
+      "no_fuel_types": "Veuillez sélectionner au moins un type de carburant à suivre.",
+      "unknown": "Une erreur inattendue s'est produite."
+    },
+    "abort": {
+      "already_configured": "Ce compte UK Fuel Finder est déjà configuré.",
+      "reconfigure_successful": "Configuration mise à jour avec succès."
+    }
+  }
+}

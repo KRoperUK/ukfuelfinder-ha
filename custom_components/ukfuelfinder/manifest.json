@@ -1,11 +1,19 @@
 {
   "domain": "ukfuelfinder",
   "name": "UK Fuel Finder",
-  "codeowners": ["@mretallack"],
+  "codeowners": [
+    "@KRoperUK"
+  ],
   "config_flow": true,
-  "documentation": "https://github.com/mretallack/ukfuelfinder-ha",
+  "documentation": "https://github.com/KRoperUK/ukfuelfinder-ha",
+  "integration_type": "service",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/mretallack/ukfuelfinder-ha/issues",
-  "requirements": ["ukfuelfinder>=3.0.0"],
+  "issue_tracker": "https://github.com/KRoperUK/ukfuelfinder-ha/issues",
+  "loggers": [
+    "ukfuelfinder"
+  ],
+  "requirements": [
+    "ukfuelfinder>=3.0.0"
+  ],
   "version": "1.5.2"
 }

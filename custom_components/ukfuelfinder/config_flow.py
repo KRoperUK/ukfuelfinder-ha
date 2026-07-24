@@ -8,7 +8,6 @@ import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_CLIENT_ID, CONF_CLIENT_SECRET, CONF_LATITUDE, CONF_LONGITUDE
-from homeassistant.core import callback
 
 from .const import (
     CONF_ENVIRONMENT,
