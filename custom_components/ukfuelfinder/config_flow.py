@@ -173,6 +173,9 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=errors,
+            description_placeholders={
+                "developer_portal_url": "https://www.developer.fuel-finder.service.gov.uk/",
+            },
         )
 
     async def async_step_reauth_confirm(
