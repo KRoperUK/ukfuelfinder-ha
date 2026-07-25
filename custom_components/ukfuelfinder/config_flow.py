@@ -174,7 +174,7 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=errors,
             description_placeholders={
-                "developer_portal_url": "https://www.developer.fuel-finder.service.gov.uk/",
+                "developer_portal_url": "https://www.developer.fuel-finder.service.gov.uk/fuel-finder/public-api#Developer_guidelines",
             },
         )
 
