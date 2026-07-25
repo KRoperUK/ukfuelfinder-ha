@@ -13,7 +13,7 @@
     "ukfuelfinder"
   ],
   "requirements": [
-    "ukfuelfinder>=3.0.0"
+    "ukfuelfinder-kroper>=3.0.0"
   ],
   "version": "1.5.2"
 }
