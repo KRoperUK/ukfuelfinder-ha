@@ -41,5 +41,10 @@ FUEL_TYPES = [
     "lpg",  # Liquefied petroleum gas
 ]
 
+# Display labels for fuel types (API key → user-friendly name)
+FUEL_TYPE_LABELS: dict[str, str] = {
+    ft: ft.replace("_", " ").title().replace("Lpg", "LPG") for ft in FUEL_TYPES
+}
+
 # Attribution
 ATTRIBUTION = "Data provided by UK Government Fuel Finder"

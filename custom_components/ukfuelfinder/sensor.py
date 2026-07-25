@@ -11,7 +11,15 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import ATTRIBUTION, CONF_FUEL_TYPES, CONF_LOCATIONS, CONF_NAME, DOMAIN, FUEL_TYPES
+from .const import (
+    ATTRIBUTION,
+    CONF_FUEL_TYPES,
+    CONF_LOCATIONS,
+    CONF_NAME,
+    DOMAIN,
+    FUEL_TYPE_LABELS,
+    FUEL_TYPES,
+)
 from .coordinator import UKFuelFinderCoordinator
 
 
@@ -137,10 +145,10 @@ class UKFuelFinderSensor(CoordinatorEntity[UKFuelFinderCoordinator], SensorEntit
 
         if location_name:
             self._attr_unique_id = f"{location_name}_{station_id}_{fuel_type}"
-            self._attr_name = f"{location_name} {fuel_type.replace('_', ' ').title()}"
+            self._attr_name = f"{location_name} {FUEL_TYPE_LABELS.get(fuel_type, fuel_type.replace('_', ' ').title())}"
         else:
             self._attr_unique_id = f"{station_id}_{fuel_type}"
-            self._attr_name = fuel_type.replace("_", " ").title()
+            self._attr_name = FUEL_TYPE_LABELS.get(fuel_type, fuel_type.replace("_", " ").title())
 
         # Device info — per-location or per-station (backward compat)
         if location_name:
@@ -248,7 +256,7 @@ class UKFuelFinderCheapestSensor(CoordinatorEntity[UKFuelFinderCoordinator], Sen
 
         if location_name:
             self._attr_unique_id = f"{location_name}_cheapest_{fuel_type}"
-            self._attr_name = f"{location_name} Cheapest {fuel_type.replace('_', ' ').title()}"
+            self._attr_name = f"{location_name} Cheapest {FUEL_TYPE_LABELS.get(fuel_type, fuel_type.replace('_', ' ').title())}"
             self._attr_device_info = DeviceInfo(
                 identifiers={(DOMAIN, location_name)},
                 name=f"{location_name} Cheapest Prices",
@@ -257,7 +265,9 @@ class UKFuelFinderCheapestSensor(CoordinatorEntity[UKFuelFinderCoordinator], Sen
             )
         else:
             self._attr_unique_id = f"cheapest_{fuel_type}"
-            self._attr_name = f"Cheapest {fuel_type.replace('_', ' ').title()}"
+            self._attr_name = (
+                f"Cheapest {FUEL_TYPE_LABELS.get(fuel_type, fuel_type.replace('_', ' ').title())}"
+            )
             self._attr_device_info = DeviceInfo(
                 identifiers={(DOMAIN, "cheapest")},
                 name="Cheapest Fuel Prices",

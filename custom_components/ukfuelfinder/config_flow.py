@@ -22,6 +22,7 @@ from .const import (
     DEFAULT_RADIUS,
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
+    FUEL_TYPE_LABELS,
     FUEL_TYPES,
     MAX_RADIUS,
     MAX_UPDATE_INTERVAL,
@@ -65,7 +66,7 @@ def _build_location_schema(
                 vol.Range(min=MIN_UPDATE_INTERVAL, max=MAX_UPDATE_INTERVAL),
             ),
             vol.Optional(CONF_FUEL_TYPES, default=default_fuel_types): cv.multi_select(
-                {fuel_type: fuel_type.replace("_", " ").title() for fuel_type in FUEL_TYPES}
+                FUEL_TYPE_LABELS
             ),
         }
     )
@@ -168,7 +169,7 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Range(min=MIN_UPDATE_INTERVAL, max=MAX_UPDATE_INTERVAL),
                     ),
                     vol.Optional(CONF_FUEL_TYPES, default=FUEL_TYPES): cv.multi_select(
-                        {fuel_type: fuel_type.replace("_", " ").title() for fuel_type in FUEL_TYPES}
+                        FUEL_TYPE_LABELS
                     ),
                 }
             ),
@@ -294,7 +295,7 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Range(min=MIN_UPDATE_INTERVAL, max=MAX_UPDATE_INTERVAL),
                     ),
                     vol.Optional(CONF_FUEL_TYPES, default=default_fuel): cv.multi_select(
-                        {fuel_type: fuel_type.replace("_", " ").title() for fuel_type in FUEL_TYPES}
+                        FUEL_TYPE_LABELS
                     ),
                 }
             ),
