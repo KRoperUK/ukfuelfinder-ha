@@ -262,6 +262,7 @@ class UKFuelFinderCheapestSensor(CoordinatorEntity[UKFuelFinderCoordinator], Sen
                 name=f"{location_name} Cheapest Prices",
                 manufacturer="UK Fuel Finder",
                 model="Aggregate Sensor",
+                via_device=(DOMAIN, location_name),
             )
         else:
             self._attr_unique_id = f"cheapest_{fuel_type}"

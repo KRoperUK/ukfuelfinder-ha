@@ -8,6 +8,7 @@ import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_CLIENT_ID, CONF_CLIENT_SECRET, CONF_LATITUDE, CONF_LONGITUDE
+from homeassistant.core import HomeAssistant
 
 from .const import (
     CONF_ENVIRONMENT,
@@ -72,6 +73,35 @@ def _build_location_schema(
     )
 
 
+def _discover_locations(hass: HomeAssistant) -> list[dict[str, Any]]:
+    """Discover candidate locations from HA config and device_trackers."""
+    discovered: list[dict[str, Any]] = []
+
+    # 1. Home Assistant's configured home location
+    if hass.config.latitude and hass.config.longitude:
+        discovered.append(
+            {
+                CONF_NAME: "Home",
+                CONF_LOCATION_SOURCE: "static",
+                CONF_LATITUDE: hass.config.latitude,
+                CONF_LONGITUDE: hass.config.longitude,
+            }
+        )
+
+    # 2. All device_tracker entities that have lat/lon attributes
+    for state in hass.states.async_all():
+        if state.domain == "device_tracker" and state.attributes.get("latitude") is not None:
+            discovered.append(
+                {
+                    CONF_NAME: state.name or state.entity_id,
+                    CONF_LOCATION_SOURCE: "device_tracker",
+                    "entity_id": state.entity_id,
+                }
+            )
+
+    return discovered
+
+
 class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for UK Fuel Finder."""
 
@@ -87,7 +117,7 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
-        """Handle the initial step — set up hub credentials and optionally a first location."""
+        """Handle the initial step — set up API credentials. Locations are added separately."""
         errors: dict[str, str] = {}
 
         if user_input is not None:
@@ -111,37 +141,17 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(user_input[CONF_CLIENT_ID])
                 self._abort_if_unique_id_configured()
 
-                # Separate credentials from location data
+                # Credentials only — locations are added via the options flow
                 data: dict[str, Any] = {
                     CONF_CLIENT_ID: user_input[CONF_CLIENT_ID],
                     CONF_CLIENT_SECRET: user_input[CONF_CLIENT_SECRET],
                     CONF_ENVIRONMENT: user_input[CONF_ENVIRONMENT],
                 }
 
-                locations: list[dict[str, Any]] = []
-
-                # If lat/lon were provided, auto-create a single location (backward compat)
-                lat = user_input.get(CONF_LATITUDE)
-                lon = user_input.get(CONF_LONGITUDE)
-                if lat is not None and lon is not None:
-                    locations.append(
-                        {
-                            CONF_NAME: "default",
-                            CONF_LOCATION_SOURCE: "static",
-                            CONF_LATITUDE: lat,
-                            CONF_LONGITUDE: lon,
-                            CONF_RADIUS: user_input.get(CONF_RADIUS, DEFAULT_RADIUS),
-                            CONF_UPDATE_INTERVAL: user_input.get(
-                                CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
-                            ),
-                            CONF_FUEL_TYPES: user_input.get(CONF_FUEL_TYPES, FUEL_TYPES),
-                        }
-                    )
-
                 return self.async_create_entry(
                     title="UK Fuel Finder",
                     data=data,
-                    options={CONF_LOCATIONS: locations},
+                    options={CONF_LOCATIONS: []},
                 )
 
         return self.async_show_form(
@@ -152,24 +162,6 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_CLIENT_SECRET): str,
                     vol.Required(CONF_ENVIRONMENT, default=DEFAULT_ENVIRONMENT): vol.In(
                         ["production", "test"]
-                    ),
-                    vol.Optional(
-                        CONF_LATITUDE,
-                        default=self.hass.config.latitude,
-                    ): cv.latitude,
-                    vol.Optional(
-                        CONF_LONGITUDE,
-                        default=self.hass.config.longitude,
-                    ): cv.longitude,
-                    vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS): vol.All(
-                        vol.Coerce(float), vol.Range(min=MIN_RADIUS, max=MAX_RADIUS)
-                    ),
-                    vol.Optional(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): vol.All(
-                        vol.Coerce(int),
-                        vol.Range(min=MIN_UPDATE_INTERVAL, max=MAX_UPDATE_INTERVAL),
-                    ),
-                    vol.Optional(CONF_FUEL_TYPES, default=FUEL_TYPES): cv.multi_select(
-                        FUEL_TYPE_LABELS
                     ),
                 }
             ),
@@ -316,7 +308,64 @@ class UKFuelFinderOptionsFlow(config_entries.OptionsFlow):
         """Show the options menu."""
         return self.async_show_menu(
             step_id="init",
-            menu_options=["add_location", "remove_location"],
+            menu_options=["add_location", "add_from_discovered", "remove_location"],
+        )
+
+    async def async_step_add_from_discovered(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.ConfigFlowResult:
+        """Add a location from auto-discovered candidates."""
+        discovered = _discover_locations(self.hass)
+
+        if not discovered:
+            # No discovered locations — fall back to manual entry
+            return await self.async_step_add_location()
+
+        if user_input is not None:
+            selected_key = user_input.get("discovered_location")
+            if selected_key == "manual":
+                return await self.async_step_add_location()
+
+            # Find the matching discovered location
+            for i, loc in enumerate(discovered):
+                key = f"discovered_{i}"
+                if key == selected_key:
+                    location: dict[str, Any] = {
+                        CONF_NAME: loc[CONF_NAME],
+                        CONF_LOCATION_SOURCE: loc[CONF_LOCATION_SOURCE],
+                        CONF_RADIUS: DEFAULT_RADIUS,
+                        CONF_UPDATE_INTERVAL: DEFAULT_UPDATE_INTERVAL,
+                        CONF_FUEL_TYPES: FUEL_TYPES,
+                    }
+                    if loc[CONF_LOCATION_SOURCE] == "static":
+                        location[CONF_LATITUDE] = loc[CONF_LATITUDE]
+                        location[CONF_LONGITUDE] = loc[CONF_LONGITUDE]
+                    else:
+                        location["entity_id"] = loc["entity_id"]
+
+                    locations: list[dict[str, Any]] = list(
+                        self._entry.options.get(CONF_LOCATIONS, [])
+                    )
+                    locations.append(location)
+                    return self.async_create_entry(
+                        title="",
+                        data={CONF_LOCATIONS: locations},
+                    )
+
+        # Build select options: discovered locations + manual entry
+        select_options: dict[str, str] = {"manual": "Enter manually…"}
+        for i, loc in enumerate(discovered):
+            key = f"discovered_{i}"
+            source_label = "📍" if loc[CONF_LOCATION_SOURCE] == "static" else "📱"
+            select_options[key] = f"{source_label} {loc[CONF_NAME]}"
+
+        return self.async_show_form(
+            step_id="add_from_discovered",
+            data_schema=vol.Schema(
+                {
+                    vol.Required("discovered_location", default="manual"): vol.In(select_options),
+                }
+            ),
         )
 
     async def async_step_add_location(

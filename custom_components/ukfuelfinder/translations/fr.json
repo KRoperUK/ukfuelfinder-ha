@@ -3,26 +3,16 @@
     "step": {
       "user": {
         "title": "Configuration de UK Fuel Finder",
-        "description": "Saisissez vos identifiants API.\n\nObtenez votre Client ID et Client Secret sur :\n[Portail développeurs Fuel Finder]({developer_portal_url})\n\nVous pouvez optionnellement définir un emplacement par défaut ci-dessous — ajoutez d'autres emplacements depuis le menu Options de l'intégration.",
+        "description": "Saisissez vos identifiants API.\n\nObtenez votre Client ID et Client Secret sur :\n[Portail développeurs Fuel Finder]({developer_portal_url})",
         "data": {
           "client_id": "ID client",
           "client_secret": "Secret client",
-          "environment": "Environnement",
-          "latitude": "Latitude",
-          "longitude": "Longitude",
-          "radius": "Rayon de recherche (km)",
-          "update_interval": "Intervalle de mise à jour (minutes)",
-          "fuel_types": "Types de carburant à suivre"
+          "environment": "Environnement"
         },
         "data_description": {
           "client_id": "Depuis le portail développeurs Fuel Finder.",
           "client_secret": "Depuis le portail développeurs Fuel Finder. Stocké localement.",
-          "environment": "Utilisez « production » sauf si vous disposez d'identifiants de l'environnement de test.",
-          "latitude": "Par défaut, la position de votre Home Assistant.",
-          "longitude": "Par défaut, la position de votre Home Assistant.",
-          "radius": "Distance de recherche des stations-service, 0,1 à 50 km.",
-          "update_interval": "Fréquence d'actualisation des prix, 5 à 1440 minutes.",
-          "fuel_types": "Des capteurs ne sont créés que pour les types de carburant sélectionnés."
+          "environment": "Utilisez « production » sauf si vous disposez d'identifiants de l'environnement de test."
         }
       },
       "reauth_confirm": {
@@ -53,6 +43,16 @@
           "radius": "Distance de recherche des stations-service, 0,1 à 50 km.",
           "update_interval": "Fréquence d'actualisation des prix, 5 à 1440 minutes.",
           "fuel_types": "Des capteurs ne sont créés que pour les types de carburant sélectionnés."
+        }
+      },
+      "add_from_discovered": {
+        "title": "Ajouter un emplacement découvert",
+        "description": "Sélectionnez un emplacement détecté ou saisissez-en un manuellement.",
+        "data": {
+          "discovered_location": "Emplacement découvert"
+        },
+        "data_description": {
+          "discovered_location": "📍 = coordonnées fixes, 📱 = device tracker. Choisissez-en un ou « Saisir manuellement… »."
         }
       },
       "add_location": {
@@ -106,6 +106,7 @@
       "init": {
         "menu_options": {
           "add_location": "Ajouter un emplacement",
+          "add_from_discovered": "Ajouter depuis la découverte",
           "remove_location": "Supprimer un emplacement"
         }
       }

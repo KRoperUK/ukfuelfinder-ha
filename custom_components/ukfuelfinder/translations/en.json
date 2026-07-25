@@ -3,26 +3,16 @@
     "step": {
       "user": {
         "title": "UK Fuel Finder Setup",
-        "description": "Enter your API credentials.\n\nGet your Client ID and Client Secret at:\n[Fuel Finder Developer Portal]({developer_portal_url})\n\nOptionally set a default location below — you can add more locations later from the integration's Options menu.",
+        "description": "Enter your API credentials.\n\nGet your Client ID and Client Secret at:\n[Fuel Finder Developer Portal]({developer_portal_url})",
         "data": {
           "client_id": "Client ID",
           "client_secret": "Client Secret",
-          "environment": "Environment",
-          "latitude": "Latitude",
-          "longitude": "Longitude",
-          "radius": "Search Radius (km)",
-          "update_interval": "Update Interval (minutes)",
-          "fuel_types": "Fuel Types to Track"
+          "environment": "Environment"
         },
         "data_description": {
           "client_id": "From the Fuel Finder developer portal.",
           "client_secret": "From the Fuel Finder developer portal. Stored locally.",
-          "environment": "Use \"production\" unless you have test environment credentials.",
-          "latitude": "Defaults to your Home Assistant location.",
-          "longitude": "Defaults to your Home Assistant location.",
-          "radius": "How far to search for stations, 0.1-50 km.",
-          "update_interval": "How often prices are refreshed, 5-1440 minutes.",
-          "fuel_types": "Sensors are only created for the selected fuel types."
+          "environment": "Use \"production\" unless you have test environment credentials."
         }
       },
       "reauth_confirm": {
@@ -53,6 +43,16 @@
           "radius": "How far to search for stations, 0.1-50 km.",
           "update_interval": "How often prices are refreshed, 5-1440 minutes.",
           "fuel_types": "Sensors are only created for the selected fuel types."
+        }
+      },
+      "add_from_discovered": {
+        "title": "Add Discovered Location",
+        "description": "Select a detected location or choose to enter one manually.",
+        "data": {
+          "discovered_location": "Discovered Location"
+        },
+        "data_description": {
+          "discovered_location": "📍 = static coordinate, 📱 = device tracker. Select one or choose \"Enter manually…\"."
         }
       },
       "add_location": {
@@ -106,6 +106,7 @@
       "init": {
         "menu_options": {
           "add_location": "Add Location",
+          "add_from_discovered": "Add from Discovered",
           "remove_location": "Remove Location"
         }
       }
