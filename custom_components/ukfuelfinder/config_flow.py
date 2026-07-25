@@ -141,17 +141,32 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(user_input[CONF_CLIENT_ID])
                 self._abort_if_unique_id_configured()
 
-                # Credentials only — locations are added via the options flow
+                # Credentials only — auto-add a "Home" location using HA coordinates
+                # so the integration works immediately without manual location setup.
                 data: dict[str, Any] = {
                     CONF_CLIENT_ID: user_input[CONF_CLIENT_ID],
                     CONF_CLIENT_SECRET: user_input[CONF_CLIENT_SECRET],
                     CONF_ENVIRONMENT: user_input[CONF_ENVIRONMENT],
                 }
 
+                locations: list[dict[str, Any]] = []
+                if self.hass.config.latitude is not None and self.hass.config.longitude is not None:
+                    locations.append(
+                        {
+                            CONF_NAME: "Home",
+                            CONF_LOCATION_SOURCE: "static",
+                            CONF_LATITUDE: self.hass.config.latitude,
+                            CONF_LONGITUDE: self.hass.config.longitude,
+                            CONF_RADIUS: DEFAULT_RADIUS,
+                            CONF_UPDATE_INTERVAL: DEFAULT_UPDATE_INTERVAL,
+                            CONF_FUEL_TYPES: FUEL_TYPES,
+                        }
+                    )
+
                 return self.async_create_entry(
                     title="UK Fuel Finder",
                     data=data,
-                    options={CONF_LOCATIONS: []},
+                    options={CONF_LOCATIONS: locations},
                 )
 
         return self.async_show_form(
