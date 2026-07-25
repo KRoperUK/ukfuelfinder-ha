@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "UK Fuel Finder einrichten",
-        "description": "Gib deine API-Zugangsdaten für UK Fuel Finder und deine Standorteinstellungen ein.",
+        "description": "Gib deine API-Zugangsdaten ein.\n\nClient-ID und Client-Secret erhältst du hier:\n[Fuel Finder Developer Portal]({developer_portal_url})\n\nOptional kann unten ein Standardstandort festgelegt werden — weitere Standorte lassen sich später über das Options-Menü der Integration hinzufügen.",
         "data": {
           "client_id": "Client-ID",
           "client_secret": "Client-Secret",

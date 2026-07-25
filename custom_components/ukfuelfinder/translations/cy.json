@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Gosod UK Fuel Finder",
-        "description": "Rhowch eich manylion API UK Fuel Finder a'ch gosodiadau lleoliad.",
+        "description": "Rhowch eich manylion API.\n\nCewch eich ID Cleient a'ch Cyfrinach Cleient yn:\n[Porth Datblygwyr Fuel Finder]({developer_portal_url})\n\nYn ddewisol, gosodwch leoliad diofyn isod — gallwch ychwanegu mwy o leoliadau o ddewislen Opsiynau'r integreiddiad.",
         "data": {
           "client_id": "ID Cleient",
           "client_secret": "Cyfrinach Cleient",
