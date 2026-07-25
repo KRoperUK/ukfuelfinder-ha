@@ -12,7 +12,7 @@
           "longitude": "Hydred",
           "radius": "Radiws chwilio (km)",
           "update_interval": "Cyfnod diweddaru (munudau)",
-          "fuel_types": "Mathau o danwydd i'w olrhain"
+          "fuel_types": "Mathau o danwydd i'w holrhain"
         },
         "data_description": {
           "client_id": "O borth datblygwyr Fuel Finder.",
@@ -39,13 +39,13 @@
       },
       "reconfigure": {
         "title": "Ailffurfweddu UK Fuel Finder",
-        "description": "Diweddarwch eich lleoliad, eich gosodiadau chwilio a'ch dewisiadau tanwydd.",
+        "description": "Diweddarwch eich gosodiadau chwilio a'ch dewisiadau tanwydd.",
         "data": {
           "latitude": "Lledred",
           "longitude": "Hydred",
           "radius": "Radiws chwilio (km)",
           "update_interval": "Cyfnod diweddaru (munudau)",
-          "fuel_types": "Mathau o danwydd i'w olrhain"
+          "fuel_types": "Mathau o danwydd i'w holrhain"
         },
         "data_description": {
           "latitude": "Lleoliad eich Home Assistant yn ddiofyn.",
@@ -54,17 +54,61 @@
           "update_interval": "Pa mor aml y caiff prisiau eu diweddaru, 5-1440 munud.",
           "fuel_types": "Dim ond ar gyfer y mathau o danwydd a ddewiswyd y crëir synwyryddion."
         }
+      },
+      "add_location": {
+        "title": "Ychwanegu Lleoliad",
+        "description": "Diffiniwch leoliad i chwilio am brisiau tanwydd o'i gwmpas.\n\n**Statig**: cyfesurynnau sefydlog.\n**Device Tracker**: dewiswch endid device_tracker (e.e. ffôn symudol) — mae'r lleoliad yn diweddaru'n awtomatig.",
+        "data": {
+          "name": "Enw'r Lleoliad",
+          "location_source": "Ffynhonnell Lleoliad",
+          "latitude": "Lledred",
+          "longitude": "Hydred",
+          "radius": "Radiws chwilio (km)",
+          "update_interval": "Cyfnod diweddaru (munudau)",
+          "fuel_types": "Mathau o danwydd i'w holrhain",
+          "entity_id": "Endid Device Tracker"
+        },
+        "data_description": {
+          "name": "Enw cyfeillgar ar gyfer y lleoliad hwn (e.e. \"Cartref\", \"Gwaith\").",
+          "location_source": "\"Static\" ar gyfer cyfesurynnau sefydlog, \"Device Tracker\" i ddilyn dyfais symudol.",
+          "latitude": "Angenrheidiol wrth ddefnyddio ffynhonnell lleoliad statig.",
+          "longitude": "Angenrheidiol wrth ddefnyddio ffynhonnell lleoliad statig.",
+          "radius": "Pa mor bell i chwilio am orsafoedd, 0.1-50 km.",
+          "update_interval": "Pa mor aml y caiff prisiau eu diweddaru, 5-1440 munud.",
+          "fuel_types": "Dim ond ar gyfer y mathau o danwydd a ddewiswyd y crëir synwyryddion.",
+          "entity_id": "e.e. device_tracker.mobile_app. Gadewch yn wag ar gyfer lleoliadau statig."
+        }
+      },
+      "remove_location": {
+        "title": "Tynnu Lleoliad",
+        "description": "Dewiswch leoliad i'w dynnu.",
+        "data": {
+          "location_index": "Lleoliad"
+        }
       }
     },
     "error": {
       "cannot_connect": "Wedi methu cysylltu â'r API UK Fuel Finder. Gwiriwch eich manylion.",
       "invalid_auth": "Manylion dilysu annilys.",
-      "no_fuel_types": "Dewiswch o leiaf un math o danwydd i'w olrhain.",
+      "no_fuel_types": "Dewiswch o leiaf un math o danwydd i'w holrhain.",
+      "missing_coordinates": "Mae angen lledred a hydred wrth ddefnyddio lleoliad statig.",
+      "missing_entity_id": "Mae angen ID endid device_tracker ar gyfer lleoliadau deinamig.",
       "unknown": "Bu gwall annisgwyl."
     },
     "abort": {
       "already_configured": "Mae'r cyfrif UK Fuel Finder hwn eisoes wedi'i ffurfweddu.",
+      "no_locations": "Nid oes unrhyw leoliadau wedi'u hychwanegu eto.",
       "reconfigure_successful": "Ffurfweddiad wedi'i ddiweddaru'n llwyddiannus."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "menu_options": {
+          "add_location": "Ychwanegu Lleoliad",
+          "remove_location": "Tynnu Lleoliad"
+        }
+      }
     }
   }
 }

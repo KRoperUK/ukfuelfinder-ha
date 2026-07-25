@@ -39,7 +39,7 @@
       },
       "reconfigure": {
         "title": "Reconfigurer UK Fuel Finder",
-        "description": "Mettez à jour la localisation, les paramètres de recherche et les types de carburant.",
+        "description": "Mettez à jour les paramètres de recherche et les types de carburant.",
         "data": {
           "latitude": "Latitude",
           "longitude": "Longitude",
@@ -54,17 +54,61 @@
           "update_interval": "Fréquence d'actualisation des prix, 5 à 1440 minutes.",
           "fuel_types": "Des capteurs ne sont créés que pour les types de carburant sélectionnés."
         }
+      },
+      "add_location": {
+        "title": "Ajouter un emplacement",
+        "description": "Définissez un emplacement pour rechercher les prix du carburant.\n\n**Statique** : coordonnées fixes.\n**Device Tracker** : sélectionnez une entité device_tracker (ex. téléphone mobile) — l'emplacement se met à jour automatiquement.",
+        "data": {
+          "name": "Nom de l'emplacement",
+          "location_source": "Source de l'emplacement",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius": "Rayon de recherche (km)",
+          "update_interval": "Intervalle de mise à jour (minutes)",
+          "fuel_types": "Types de carburant à suivre",
+          "entity_id": "Entité Device Tracker"
+        },
+        "data_description": {
+          "name": "Un nom descriptif pour cet emplacement (ex. \"Maison\", \"Travail\").",
+          "location_source": "\"Static\" pour des coordonnées fixes, \"Device Tracker\" pour suivre un appareil mobile.",
+          "latitude": "Requis avec une source d'emplacement statique.",
+          "longitude": "Requis avec une source d'emplacement statique.",
+          "radius": "Distance de recherche des stations-service, 0,1 à 50 km.",
+          "update_interval": "Fréquence d'actualisation des prix, 5 à 1440 minutes.",
+          "fuel_types": "Des capteurs ne sont créés que pour les types de carburant sélectionnés.",
+          "entity_id": "ex. device_tracker.mobile_app. Laisser vide pour les emplacements statiques."
+        }
+      },
+      "remove_location": {
+        "title": "Supprimer un emplacement",
+        "description": "Sélectionnez un emplacement à supprimer.",
+        "data": {
+          "location_index": "Emplacement"
+        }
       }
     },
     "error": {
       "cannot_connect": "Échec de connexion à l'API UK Fuel Finder. Veuillez vérifier vos identifiants.",
       "invalid_auth": "Identifiants d'authentification invalides.",
       "no_fuel_types": "Veuillez sélectionner au moins un type de carburant à suivre.",
+      "missing_coordinates": "La latitude et la longitude sont requises pour un emplacement statique.",
+      "missing_entity_id": "Une entité device_tracker est requise pour les emplacements dynamiques.",
       "unknown": "Une erreur inattendue s'est produite."
     },
     "abort": {
       "already_configured": "Ce compte UK Fuel Finder est déjà configuré.",
+      "no_locations": "Aucun emplacement n'a encore été ajouté.",
       "reconfigure_successful": "Configuration mise à jour avec succès."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "menu_options": {
+          "add_location": "Ajouter un emplacement",
+          "remove_location": "Supprimer un emplacement"
+        }
+      }
     }
   }
 }
