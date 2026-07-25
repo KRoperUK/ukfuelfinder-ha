@@ -39,7 +39,7 @@
       },
       "reconfigure": {
         "title": "UK Fuel Finder neu konfigurieren",
-        "description": "Aktualisiere deinen Standort, deine Sucheinstellungen und deine Kraftstoffarten.",
+        "description": "Aktualisiere deine Sucheinstellungen und Kraftstoffarten.",
         "data": {
           "latitude": "Breitengrad",
           "longitude": "Längengrad",
@@ -54,17 +54,61 @@
           "update_interval": "Wie oft Preise aktualisiert werden, 5-1440 Minuten.",
           "fuel_types": "Sensoren werden nur für die ausgewählten Kraftstoffarten erstellt."
         }
+      },
+      "add_location": {
+        "title": "Standort hinzufügen",
+        "description": "Definiere einen Standort für die Kraftstoffpreissuche.\n\n**Statisch**: feste Koordinaten.\n**Device Tracker**: wähle eine device_tracker-Entität (z.B. Mobiltelefon) — der Standort wird automatisch aktualisiert.",
+        "data": {
+          "name": "Standortname",
+          "location_source": "Standortquelle",
+          "latitude": "Breitengrad",
+          "longitude": "Längengrad",
+          "radius": "Suchradius (km)",
+          "update_interval": "Aktualisierungsintervall (Minuten)",
+          "fuel_types": "Zu verfolgende Kraftstoffarten",
+          "entity_id": "Device Tracker Entität"
+        },
+        "data_description": {
+          "name": "Ein verständlicher Name für diesen Standort (z.B. \"Zuhause\", \"Arbeit\").",
+          "location_source": "\"Static\" für feste Koordinaten, \"Device Tracker\" um einem Mobilgerät zu folgen.",
+          "latitude": "Erforderlich bei statischer Standortquelle.",
+          "longitude": "Erforderlich bei statischer Standortquelle.",
+          "radius": "Suchbereich für Tankstellen, 0,1-50 km.",
+          "update_interval": "Wie oft Preise aktualisiert werden, 5-1440 Minuten.",
+          "fuel_types": "Sensoren werden nur für die ausgewählten Kraftstoffarten erstellt.",
+          "entity_id": "z.B. device_tracker.mobile_app. Bei statischen Standorten leer lassen."
+        }
+      },
+      "remove_location": {
+        "title": "Standort entfernen",
+        "description": "Wähle einen zu entfernenden Standort aus.",
+        "data": {
+          "location_index": "Standort"
+        }
       }
     },
     "error": {
       "cannot_connect": "Verbindung zur UK-Fuel-Finder-API fehlgeschlagen. Bitte überprüfe deine Zugangsdaten.",
       "invalid_auth": "Ungültige Zugangsdaten.",
       "no_fuel_types": "Bitte wähle mindestens eine Kraftstoffart aus.",
+      "missing_coordinates": "Breiten- und Längengrad sind bei statischem Standort erforderlich.",
+      "missing_entity_id": "Eine device_tracker-Entitäts-ID ist für dynamische Standorte erforderlich.",
       "unknown": "Ein unerwarteter Fehler ist aufgetreten."
     },
     "abort": {
       "already_configured": "Dieses UK-Fuel-Finder-Konto ist bereits konfiguriert.",
+      "no_locations": "Es wurden noch keine Standorte hinzugefügt.",
       "reconfigure_successful": "Konfiguration erfolgreich aktualisiert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "menu_options": {
+          "add_location": "Standort hinzufügen",
+          "remove_location": "Standort entfernen"
+        }
+      }
     }
   }
 }
