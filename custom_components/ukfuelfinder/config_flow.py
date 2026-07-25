@@ -49,7 +49,7 @@ def _build_location_schema(
         {
             vol.Required(CONF_NAME, default=default_name): str,
             vol.Required(CONF_LOCATION_SOURCE, default=default_source): vol.In(
-                ["static", "device_tracker"]
+                {"static": "Static location", "device_tracker": "Device tracker"}
             ),
             vol.Optional(
                 CONF_LATITUDE,
