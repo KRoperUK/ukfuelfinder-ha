@@ -3,26 +3,16 @@
     "step": {
       "user": {
         "title": "Configuración de UK Fuel Finder",
-        "description": "Introduce tus credenciales de la API.\n\nObtén tu Client ID y Client Secret en:\n[Portal de desarrolladores de Fuel Finder]({developer_portal_url})\n\nOpcionalmente, define una ubicación por defecto más abajo — puedes añadir más ubicaciones desde el menú de opciones de la integración.",
+        "description": "Introduce tus credenciales de la API.\n\nObtén tu Client ID y Client Secret en:\n[Portal de desarrolladores de Fuel Finder]({developer_portal_url})",
         "data": {
           "client_id": "ID de cliente",
           "client_secret": "Secreto de cliente",
-          "environment": "Entorno",
-          "latitude": "Latitud",
-          "longitude": "Longitud",
-          "radius": "Radio de búsqueda (km)",
-          "update_interval": "Intervalo de actualización (minutos)",
-          "fuel_types": "Tipos de combustible a seguir"
+          "environment": "Entorno"
         },
         "data_description": {
           "client_id": "Del portal para desarrolladores de Fuel Finder.",
           "client_secret": "Del portal para desarrolladores de Fuel Finder. Se almacena localmente.",
-          "environment": "Usa \"production\" salvo que tengas credenciales del entorno de pruebas.",
-          "latitude": "Por defecto, la ubicación de tu Home Assistant.",
-          "longitude": "Por defecto, la ubicación de tu Home Assistant.",
-          "radius": "Distancia de búsqueda de gasolineras, 0,1-50 km.",
-          "update_interval": "Frecuencia de actualización de los precios, 5-1440 minutos.",
-          "fuel_types": "Solo se crean sensores para los tipos de combustible seleccionados."
+          "environment": "Usa \"production\" salvo que tengas credenciales del entorno de pruebas."
         }
       },
       "reauth_confirm": {
@@ -53,6 +43,16 @@
           "radius": "Distancia de búsqueda de gasolineras, 0,1-50 km.",
           "update_interval": "Frecuencia de actualización de los precios, 5-1440 minutos.",
           "fuel_types": "Solo se crean sensores para los tipos de combustible seleccionados."
+        }
+      },
+      "add_from_discovered": {
+        "title": "Añadir ubicación descubierta",
+        "description": "Selecciona una ubicación detectada o introduce una manualmente.",
+        "data": {
+          "discovered_location": "Ubicación descubierta"
+        },
+        "data_description": {
+          "discovered_location": "📍 = coordenadas fijas, 📱 = device tracker. Elige una o «Introducir manualmente…»."
         }
       },
       "add_location": {
@@ -106,6 +106,7 @@
       "init": {
         "menu_options": {
           "add_location": "Añadir ubicación",
+          "add_from_discovered": "Añadir desde descubrimiento",
           "remove_location": "Eliminar ubicación"
         }
       }

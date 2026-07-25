@@ -3,26 +3,16 @@
     "step": {
       "user": {
         "title": "Gosod UK Fuel Finder",
-        "description": "Rhowch eich manylion API.\n\nCewch eich ID Cleient a'ch Cyfrinach Cleient yn:\n[Porth Datblygwyr Fuel Finder]({developer_portal_url})\n\nYn ddewisol, gosodwch leoliad diofyn isod — gallwch ychwanegu mwy o leoliadau o ddewislen Opsiynau'r integreiddiad.",
+        "description": "Rhowch eich manylion API.\n\nCewch eich ID Cleient a'ch Cyfrinach Cleient yn:\n[Porth Datblygwyr Fuel Finder]({developer_portal_url})",
         "data": {
           "client_id": "ID Cleient",
           "client_secret": "Cyfrinach Cleient",
-          "environment": "Amgylchedd",
-          "latitude": "Lledred",
-          "longitude": "Hydred",
-          "radius": "Radiws chwilio (km)",
-          "update_interval": "Cyfnod diweddaru (munudau)",
-          "fuel_types": "Mathau o danwydd i'w holrhain"
+          "environment": "Amgylchedd"
         },
         "data_description": {
           "client_id": "O borth datblygwyr Fuel Finder.",
           "client_secret": "O borth datblygwyr Fuel Finder. Caiff ei gadw'n lleol.",
-          "environment": "Defnyddiwch \"production\" oni bai bod gennych fanylion yr amgylchedd prawf.",
-          "latitude": "Lleoliad eich Home Assistant yn ddiofyn.",
-          "longitude": "Lleoliad eich Home Assistant yn ddiofyn.",
-          "radius": "Pa mor bell i chwilio am orsafoedd, 0.1-50 km.",
-          "update_interval": "Pa mor aml y caiff prisiau eu diweddaru, 5-1440 munud.",
-          "fuel_types": "Dim ond ar gyfer y mathau o danwydd a ddewiswyd y crëir synwyryddion."
+          "environment": "Defnyddiwch \"production\" oni bai bod gennych fanylion yr amgylchedd prawf."
         }
       },
       "reauth_confirm": {
@@ -53,6 +43,16 @@
           "radius": "Pa mor bell i chwilio am orsafoedd, 0.1-50 km.",
           "update_interval": "Pa mor aml y caiff prisiau eu diweddaru, 5-1440 munud.",
           "fuel_types": "Dim ond ar gyfer y mathau o danwydd a ddewiswyd y crëir synwyryddion."
+        }
+      },
+      "add_from_discovered": {
+        "title": "Ychwanegu Lleoliad a Ddarganfuwyd",
+        "description": "Dewiswch leoliad a ganfuwyd neu rhowch un â llaw.",
+        "data": {
+          "discovered_location": "Lleoliad a Ddarganfuwyd"
+        },
+        "data_description": {
+          "discovered_location": "📍 = cyfesurynnau sefydlog, 📱 = traciwr dyfais. Dewiswch un neu \"Rhoi â llaw…\"."
         }
       },
       "add_location": {
@@ -106,6 +106,7 @@
       "init": {
         "menu_options": {
           "add_location": "Ychwanegu Lleoliad",
+          "add_from_discovered": "Ychwanegu o Ddarganfyddiad",
           "remove_location": "Tynnu Lleoliad"
         }
       }
