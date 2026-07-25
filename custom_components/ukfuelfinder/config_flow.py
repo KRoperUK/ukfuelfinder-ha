@@ -34,8 +34,6 @@ from .const import (
 
 def _build_location_schema(
     *,
-    default_lat: float | None = None,
-    default_lon: float | None = None,
     default_radius: float = DEFAULT_RADIUS,
     default_update: int = DEFAULT_UPDATE_INTERVAL,
     default_fuel_types: list[str] | None = None,
@@ -51,14 +49,8 @@ def _build_location_schema(
             vol.Required(CONF_LOCATION_SOURCE, default=default_source): vol.In(
                 {"static": "Static location", "device_tracker": "Device tracker"}
             ),
-            vol.Optional(
-                CONF_LATITUDE,
-                default=default_lat if default_lat is not None else 51.5074,
-            ): cv.latitude,
-            vol.Optional(
-                CONF_LONGITUDE,
-                default=default_lon if default_lon is not None else -0.1278,
-            ): cv.longitude,
+            vol.Optional(CONF_LATITUDE): cv.latitude,
+            vol.Optional(CONF_LONGITUDE): cv.longitude,
             vol.Required(CONF_RADIUS, default=default_radius): vol.All(
                 vol.Coerce(float), vol.Range(min=MIN_RADIUS, max=MAX_RADIUS)
             ),
@@ -427,10 +419,7 @@ class UKFuelFinderOptionsFlow(config_entries.OptionsFlow):
                     data={CONF_LOCATIONS: locations},
                 )
 
-        schema = _build_location_schema(
-            default_lat=self.hass.config.latitude,
-            default_lon=self.hass.config.longitude,
-        )
+        schema = _build_location_schema()
         # Add entity_id field for device_tracker source
         schema = schema.extend(
             {
