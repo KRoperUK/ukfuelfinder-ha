@@ -237,3 +237,145 @@ async def _create_hub_entry(hass):
         )
         assert result["type"] == FlowResultType.CREATE_ENTRY
     return result["result"]
+
+
+async def test_reauth_flow(hass):
+    """Test reauthentication flow."""
+    with patch("ukfuelfinder.FuelFinderClient") as mock_client:
+        mock_instance = mock_client.return_value
+        mock_instance.get_all_pfs_info = lambda: []
+        entry = await _create_hub_entry(hass)
+
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={"source": config_entries.SOURCE_REAUTH, "entry_id": entry.entry_id},
+        )
+        assert result["type"] == FlowResultType.FORM
+        assert result["step_id"] == "reauth_confirm"
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {CONF_CLIENT_ID: "new_id", CONF_CLIENT_SECRET: "new_secret"},
+        )
+        assert result["type"] == FlowResultType.ABORT
+        assert result["reason"] == "reauth_successful"
+
+
+async def test_reauth_flow_invalid_auth(hass):
+    """Test reauthentication flow with invalid credentials."""
+    with patch("ukfuelfinder.FuelFinderClient") as mock_client:
+        mock_instance = mock_client.return_value
+        mock_instance.get_all_pfs_info = lambda: []
+        entry = await _create_hub_entry(hass)
+
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={"source": config_entries.SOURCE_REAUTH, "entry_id": entry.entry_id},
+        )
+
+        # Make the client fail on reauth
+        mock_instance.get_all_pfs_info = lambda: (_ for _ in ()).throw(Exception("auth failed"))
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {CONF_CLIENT_ID: "bad_id", CONF_CLIENT_SECRET: "bad_secret"},
+        )
+        assert result["type"] == FlowResultType.FORM
+        assert result["errors"] == {"base": "invalid_auth"}
+
+
+async def test_reconfigure_flow(hass):
+    """Test reconfigure flow for legacy entries."""
+    with patch("ukfuelfinder.FuelFinderClient") as mock_client:
+        mock_instance = mock_client.return_value
+        mock_instance.get_all_pfs_info = lambda: []
+        entry = await _create_hub_entry(hass)
+
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={"source": config_entries.SOURCE_RECONFIGURE, "entry_id": entry.entry_id},
+        )
+        assert result["type"] == FlowResultType.FORM
+        assert result["step_id"] == "reconfigure"
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                "latitude": 52.0,
+                "longitude": -0.5,
+                "radius": 10.0,
+                "update_interval": 60,
+                "fuel_types": ["e10", "b7"],
+            },
+        )
+        assert result["type"] == FlowResultType.ABORT
+        assert result["reason"] == "reconfigure_successful"
+
+
+async def test_add_location_duplicate_name(hass):
+    """Test add_location rejects duplicate location name."""
+    with patch("ukfuelfinder.FuelFinderClient") as mock_client:
+        mock_instance = mock_client.return_value
+        mock_instance.get_all_pfs_info = lambda: []
+        entry = await _create_hub_entry(hass)
+
+        # First add a named location
+        result = await hass.config_entries.options.async_init(entry.entry_id)
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"], {"next_step_id": "add_location"}
+        )
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"],
+            {
+                "name": "Work",
+                "location_source": "static",
+                "latitude": 51.5,
+                "longitude": -0.1,
+                "radius": 3.0,
+                "update_interval": 30,
+                "fuel_types": ["e10"],
+            },
+        )
+        assert result["type"] == FlowResultType.CREATE_ENTRY
+
+        # Try adding the same name again
+        result = await hass.config_entries.options.async_init(entry.entry_id)
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"], {"next_step_id": "add_location"}
+        )
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"],
+            {
+                "name": "Work",
+                "location_source": "static",
+                "latitude": 52.0,
+                "longitude": -1.0,
+                "radius": 5.0,
+                "update_interval": 30,
+                "fuel_types": ["b7"],
+            },
+        )
+        assert result["type"] == FlowResultType.FORM
+        assert result["errors"] == {"base": "duplicate_name"}
+
+
+async def test_add_from_discovered_flow(hass):
+    """Test adding a location from the auto-discovered list."""
+    with patch("ukfuelfinder.FuelFinderClient") as mock_client:
+        mock_instance = mock_client.return_value
+        mock_instance.get_all_pfs_info = lambda: []
+        entry = await _create_hub_entry(hass)
+
+        # Set up a device_tracker for discovery
+        hass.states.async_set(
+            "device_tracker.phone",
+            "home",
+            {"latitude": 51.6, "longitude": -0.2, "source_type": "gps"},
+        )
+
+        result = await hass.config_entries.options.async_init(entry.entry_id)
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"], {"next_step_id": "add_from_discovered"}
+        )
+        # Should show discovered locations form
+        assert result["type"] == FlowResultType.FORM

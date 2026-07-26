@@ -182,6 +182,12 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             },
         )
 
+    async def async_step_reauth(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.ConfigFlowResult:
+        """Handle reauthentication — redirect to confirm step."""
+        return await self.async_step_reauth_confirm(user_input)
+
     async def async_step_reauth_confirm(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
