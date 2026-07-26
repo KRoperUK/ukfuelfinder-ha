@@ -11,11 +11,13 @@ from homeassistant.core import HomeAssistant
 
 from .const import (
     CONF_ENVIRONMENT,
+    CONF_EXCLUDE_MOTORWAY,
     CONF_FUEL_TYPES,
     CONF_LOCATION_SOURCE,
     CONF_LOCATIONS,
     CONF_NAME,
     CONF_RADIUS,
+    CONF_SUPERMARKET_ONLY,
     CONF_UPDATE_INTERVAL,
     DEFAULT_RADIUS,
     DEFAULT_UPDATE_INTERVAL,
@@ -26,7 +28,7 @@ from .coordinator import UKFuelFinderCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = ["sensor"]
+PLATFORMS = ["binary_sensor", "sensor"]
 
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
@@ -88,6 +90,8 @@ def _migrate_legacy_entry(entry: ConfigEntry) -> bool:
         CONF_RADIUS: radius,
         CONF_UPDATE_INTERVAL: update_interval,
         CONF_FUEL_TYPES: fuel_types,
+        CONF_EXCLUDE_MOTORWAY: False,
+        CONF_SUPERMARKET_ONLY: False,
     }
 
     # Update the entry in place

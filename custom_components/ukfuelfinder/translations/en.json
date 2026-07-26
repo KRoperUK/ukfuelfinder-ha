@@ -29,7 +29,7 @@
       },
       "reconfigure": {
         "title": "Reconfigure UK Fuel Finder",
-        "description": "Update your location, search settings, and fuel type preferences.",
+        "description": "Update your search settings and fuel type preferences.",
         "data": {
           "latitude": "Latitude",
           "longitude": "Longitude",
@@ -45,6 +45,16 @@
           "fuel_types": "Sensors are only created for the selected fuel types."
         }
       },
+      "add_from_discovered": {
+        "title": "Add Discovered Location",
+        "description": "Select a detected location or choose to enter one manually.",
+        "data": {
+          "discovered_location": "Discovered Location"
+        },
+        "data_description": {
+          "discovered_location": "📍 = static coordinate, 📱 = device tracker. Select one or choose \"Enter manually…\"."
+        }
+      },
       "add_location": {
         "title": "Add Location",
         "description": "Define a location to search for fuel prices around.\n\n**Static**: enter fixed coordinates.\n**Device Tracker**: select a device_tracker entity (e.g. mobile phone) — the location updates automatically.",
@@ -57,27 +67,20 @@
           "update_interval": "Update Interval (minutes)",
           "fuel_types": "Fuel Types to Track",
           "entity_id": "Device Tracker Entity",
-          "exclude_motorway": "Exclude Motorway Stations",
+          "exclude_motorway": "Exclude Motorway Service Stations",
           "supermarket_only": "Supermarket Stations Only"
         },
         "data_description": {
           "name": "A friendly name for this location (e.g. \"Home\", \"Work\").",
-          "location_source": "\"Static location\" for fixed coordinates, \"Device tracker\" to follow a mobile device.",
+          "location_source": "\"Static\" for fixed coordinates, \"Device Tracker\" to follow a mobile device.",
           "latitude": "Required when using a static location source.",
           "longitude": "Required when using a static location source.",
           "radius": "How far to search for stations, 0.1-50 km.",
           "update_interval": "How often prices are refreshed, 5-1440 minutes.",
           "fuel_types": "Sensors are only created for the selected fuel types.",
           "entity_id": "e.g. device_tracker.mobile_app. Leave blank for static locations.",
-          "exclude_motorway": "Hide stations on motorways.",
-          "supermarket_only": "Only show stations at supermarkets."
-        }
-      },
-      "add_from_discovered": {
-        "title": "Add from Discovered",
-        "description": "Select a detected location or choose to enter one manually.",
-        "data": {
-          "discovered_location": "Discovered Location"
+          "exclude_motorway": "Hide motorway service stations from results.",
+          "supermarket_only": "Only show stations at supermarkets (e.g. Tesco, ASDA, Sainsbury\u2019s)."
         }
       },
       "remove_location": {
@@ -92,14 +95,14 @@
       "cannot_connect": "Failed to connect to UK Fuel Finder API. Please check your credentials.",
       "invalid_auth": "Invalid authentication credentials.",
       "no_fuel_types": "Please select at least one fuel type to track.",
-      "unknown": "Unexpected error occurred.",
       "missing_coordinates": "Latitude and longitude are required when using a static location.",
-      "missing_entity_id": "A device_tracker entity ID is required for dynamic locations."
+      "missing_entity_id": "A device_tracker entity ID is required for dynamic locations.",
+      "unknown": "Unexpected error occurred."
     },
     "abort": {
       "already_configured": "This UK Fuel Finder account is already configured.",
-      "reconfigure_successful": "Configuration updated successfully.",
-      "no_locations": "No locations have been added yet."
+      "no_locations": "No locations have been added yet.",
+      "reconfigure_successful": "Configuration updated successfully."
     }
   },
   "options": {

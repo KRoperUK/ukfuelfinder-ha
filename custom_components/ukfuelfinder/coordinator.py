@@ -15,9 +15,11 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     CONF_ENVIRONMENT,
+    CONF_EXCLUDE_MOTORWAY,
     CONF_LOCATION_SOURCE,
     CONF_NAME,
     CONF_RADIUS,
+    CONF_SUPERMARKET_ONLY,
     CONF_UPDATE_INTERVAL,
     DOMAIN,
 )
@@ -85,6 +87,7 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
         self.locations: list[dict[str, Any]] | None = None  # Set by __init__.py for hub model
         self.previous_stations: set[str] = set()
         self.missing_stations: dict[str, int] = {}  # station_id -> missing_count
+        self._previous_cheapest: dict[str, float] = {}  # fuel_type -> previous cheapest price
 
         from ukfuelfinder import FuelFinderClient
 
@@ -132,6 +135,22 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
                     **station_data["info"],
                     "distance": station_data["distance"],
                 }
+
+        if cheapest is not None:
+            current_price = cheapest["price"]
+            previous_price = self._previous_cheapest.get(fuel_type)
+
+            if previous_price is None:
+                cheapest["price_trend"] = "new"
+            elif current_price < previous_price:
+                cheapest["price_trend"] = "down"
+            elif current_price > previous_price:
+                cheapest["price_trend"] = "up"
+            else:
+                cheapest["price_trend"] = "steady"
+
+            cheapest["previous_price_pence"] = previous_price
+            self._previous_cheapest[fuel_type] = current_price
 
         return cheapest
 
@@ -194,6 +213,21 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
             )
 
             stations = self._build_stations(nearby, all_pfs)
+
+            # Apply brand/amenity filters for this location
+            if location.get(CONF_EXCLUDE_MOTORWAY, False):
+                stations = {
+                    sid: sdata
+                    for sid, sdata in stations.items()
+                    if not sdata["info"].get("is_motorway", False)
+                }
+            if location.get(CONF_SUPERMARKET_ONLY, False):
+                stations = {
+                    sid: sdata
+                    for sid, sdata in stations.items()
+                    if sdata["info"].get("is_supermarket", False)
+                }
+
             # Merge — later locations don't overwrite earlier ones for same station
             for sid, sdata in stations.items():
                 if sid not in all_stations:

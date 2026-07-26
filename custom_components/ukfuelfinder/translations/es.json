@@ -67,8 +67,8 @@
           "update_interval": "Intervalo de actualización (minutos)",
           "fuel_types": "Tipos de combustible a seguir",
           "entity_id": "Entidad Device Tracker",
-          "exclude_motorway": "Exclude Motorway Stations",
-          "supermarket_only": "Supermarket Stations Only"
+          "exclude_motorway": "Excluir estaciones de autopista",
+          "supermarket_only": "Solo supermercados"
         },
         "data_description": {
           "name": "Un nombre descriptivo para esta ubicación (p.ej. \"Casa\", \"Trabajo\").",
@@ -79,8 +79,8 @@
           "update_interval": "Frecuencia de actualización de los precios, 5-1440 minutos.",
           "fuel_types": "Solo se crean sensores para los tipos de combustible seleccionados.",
           "entity_id": "p.ej. device_tracker.mobile_app. Dejar vacío para ubicaciones estáticas.",
-          "exclude_motorway": "Hide stations on motorways.",
-          "supermarket_only": "Only show stations at supermarkets."
+          "exclude_motorway": "Ocultar estaciones de servicio de autopista de los resultados.",
+          "supermarket_only": "Mostrar solo gasolineras de supermercados (p.ej. Tesco, ASDA, Sainsbury\u2019s)."
         }
       },
       "remove_location": {

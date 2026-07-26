@@ -67,8 +67,8 @@
           "update_interval": "Aktualisierungsintervall (Minuten)",
           "fuel_types": "Zu verfolgende Kraftstoffarten",
           "entity_id": "Device Tracker Entität",
-          "exclude_motorway": "Exclude Motorway Stations",
-          "supermarket_only": "Supermarket Stations Only"
+          "exclude_motorway": "Autobahnraststätten ausschließen",
+          "supermarket_only": "Nur Supermarkt-Tankstellen"
         },
         "data_description": {
           "name": "Ein verständlicher Name für diesen Standort (z.B. \"Zuhause\", \"Arbeit\").",
@@ -79,8 +79,8 @@
           "update_interval": "Wie oft Preise aktualisiert werden, 5-1440 Minuten.",
           "fuel_types": "Sensoren werden nur für die ausgewählten Kraftstoffarten erstellt.",
           "entity_id": "z.B. device_tracker.mobile_app. Bei statischen Standorten leer lassen.",
-          "exclude_motorway": "Hide stations on motorways.",
-          "supermarket_only": "Only show stations at supermarkets."
+          "exclude_motorway": "Autobahnraststätten aus den Ergebnissen ausblenden.",
+          "supermarket_only": "Nur Tankstellen in Supermärkten anzeigen (z.B. Tesco, ASDA, Sainsbury\u2019s)."
         }
       },
       "remove_location": {
