@@ -97,7 +97,8 @@
       "no_fuel_types": "Bitte wähle mindestens eine Kraftstoffart aus.",
       "missing_coordinates": "Breiten- und Längengrad sind bei statischem Standort erforderlich.",
       "missing_entity_id": "Eine device_tracker-Entitäts-ID ist für dynamische Standorte erforderlich.",
-      "unknown": "Ein unerwarteter Fehler ist aufgetreten."
+      "unknown": "Ein unerwarteter Fehler ist aufgetreten.",
+      "duplicate_name": "Ein Standort mit diesem Namen existiert bereits."
     },
     "abort": {
       "already_configured": "Dieses UK-Fuel-Finder-Konto ist bereits konfiguriert.",

@@ -97,6 +97,7 @@
       "no_fuel_types": "Please select at least one fuel type to track.",
       "missing_coordinates": "Latitude and longitude are required when using a static location.",
       "missing_entity_id": "A device_tracker entity ID is required for dynamic locations.",
+      "duplicate_name": "A location with this name already exists.",
       "unknown": "Unexpected error occurred."
     },
     "abort": {

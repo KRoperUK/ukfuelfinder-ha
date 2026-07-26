@@ -57,7 +57,16 @@ async def async_setup_entry(
                 loc_name: str = location.get(CONF_NAME, "unnamed")
                 selected_fuel_types: list[str] = location.get(CONF_FUEL_TYPES, FUEL_TYPES)
 
-                for station_id, station_data in coordinator.data["stations"].items():
+                for station_key, station_data in coordinator.data["stations"].items():
+                    # Hub-mode station keys are (location_name, station_id)
+                    # tuples — only create sensors for stations that belong
+                    # to THIS location
+                    if not isinstance(station_key, tuple):
+                        continue
+                    if station_key[0] != loc_name:
+                        continue
+                    station_id = station_key[1]
+
                     for fuel_type in station_data["prices"]:
                         if fuel_type not in selected_fuel_types:
                             continue
@@ -167,13 +176,22 @@ class UKFuelFinderSensor(CoordinatorEntity[UKFuelFinderCoordinator], SensorEntit
                 model="Fuel Station",
             )
 
-    @property
-    def native_value(self) -> float | None:
-        """Return the price in pounds."""
+    def _current_station_data(self) -> dict[str, Any] | None:
+        """Return current station data, handling hub-mode tuple keys."""
         if not self.coordinator.data or "stations" not in self.coordinator.data:
             return None
 
-        station = self.coordinator.data["stations"].get(self._station_id)
+        # Hub-mode stations are keyed by (location_name, station_id) tuples
+        key: Any = (
+            (self._location_name, self._station_id) if self._location_name else self._station_id
+        )
+        station: dict[str, Any] | None = self.coordinator.data["stations"].get(key)
+        return station
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the price in pounds."""
+        station = self._current_station_data()
         if not station:
             return None
 
@@ -187,10 +205,7 @@ class UKFuelFinderSensor(CoordinatorEntity[UKFuelFinderCoordinator], SensorEntit
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return station attributes."""
-        if not self.coordinator.data or "stations" not in self.coordinator.data:
-            return {}
-
-        station = self.coordinator.data["stations"].get(self._station_id)
+        station = self._current_station_data()
         if not station:
             return {}
 
@@ -227,10 +242,7 @@ class UKFuelFinderSensor(CoordinatorEntity[UKFuelFinderCoordinator], SensorEntit
         if not super().available:
             return False
 
-        if not self.coordinator.data or "stations" not in self.coordinator.data:
-            return False
-
-        station = self.coordinator.data["stations"].get(self._station_id)
+        station = self._current_station_data()
         return station is not None and self._fuel_type in station.get("prices", {})
 
 
@@ -276,10 +288,16 @@ class UKFuelFinderCheapestSensor(CoordinatorEntity[UKFuelFinderCoordinator], Sen
                 model="Aggregate Sensor",
             )
 
+    def _get_cheapest(self) -> dict[str, Any] | None:
+        """Return cheapest fuel data, scoped to this sensor's location if set."""
+        if self._location_name:
+            return self.coordinator.get_cheapest_fuel(self._fuel_type, self._location_name)
+        return self.coordinator.get_cheapest_fuel(self._fuel_type)
+
     @property
     def native_value(self) -> float | None:
         """Return the cheapest price in pounds."""
-        cheapest = self.coordinator.get_cheapest_fuel(self._fuel_type)
+        cheapest = self._get_cheapest()
         if not cheapest:
             return None
         return round(float(cheapest["price"]) / 100, 3)
@@ -287,7 +305,7 @@ class UKFuelFinderCheapestSensor(CoordinatorEntity[UKFuelFinderCoordinator], Sen
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return station attributes for the cheapest price."""
-        cheapest = self.coordinator.get_cheapest_fuel(self._fuel_type)
+        cheapest = self._get_cheapest()
         if not cheapest:
             return {}
 
@@ -324,5 +342,4 @@ class UKFuelFinderCheapestSensor(CoordinatorEntity[UKFuelFinderCoordinator], Sen
             return False
 
         # Sensor is available if we can find at least one station with this fuel type
-        cheapest = self.coordinator.get_cheapest_fuel(self._fuel_type)
-        return cheapest is not None
+        return self._get_cheapest() is not None

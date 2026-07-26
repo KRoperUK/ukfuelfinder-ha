@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from collections.abc import Mapping
 from datetime import timedelta
 from typing import Any
@@ -21,6 +22,7 @@ from .const import (
     CONF_RADIUS,
     CONF_SUPERMARKET_ONLY,
     CONF_UPDATE_INTERVAL,
+    DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
 )
 
@@ -85,9 +87,12 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
         self.entry_data = entry_data
         self.config_entry = None  # Set by __init__.py after coordinator creation
         self.locations: list[dict[str, Any]] | None = None  # Set by __init__.py for hub model
-        self.previous_stations: set[str] = set()
-        self.missing_stations: dict[str, int] = {}  # station_id -> missing_count
+        # Station keys are plain station IDs in legacy mode, or
+        # (location_name, station_id) tuples in hub+locations mode.
+        self.previous_stations: set[Any] = set()
+        self.missing_stations: dict[Any, int] = {}  # station key -> missing_count
         self._previous_cheapest: dict[str, float] = {}  # fuel_type -> previous cheapest price
+        self._location_last_fetch: dict[str, float] = {}  # location name -> monotonic time
 
         from ukfuelfinder import FuelFinderClient
 
@@ -108,11 +113,15 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
             update_interval=update_interval,
         )
 
-    def get_cheapest_fuel(self, fuel_type: str) -> dict[str, Any] | None:
+    def get_cheapest_fuel(
+        self, fuel_type: str, location_name: str | None = None
+    ) -> dict[str, Any] | None:
         """Find the cheapest price for a given fuel type.
 
         Args:
             fuel_type: Fuel type to search for (e.g., "e10", "b7")
+            location_name: Restrict the search to stations belonging to this
+                location (hub+locations mode). None searches all stations.
 
         Returns:
             Dictionary with station info and price, or None if no stations have this fuel type
@@ -123,7 +132,18 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
         cheapest = None
         cheapest_price = float("inf")
 
-        for station_id, station_data in self.data["stations"].items():
+        for station_key, station_data in self.data["stations"].items():
+            # Hub-mode keys are (location_name, station_id) tuples
+            if isinstance(station_key, tuple):
+                if location_name is not None and station_key[0] != location_name:
+                    continue
+                station_id = station_key[1]
+            else:
+                # Flat (legacy) keys cannot be attributed to a location
+                if location_name is not None:
+                    continue
+                station_id = station_key
+
             price = station_data["prices"].get(fuel_type)
             if price and price < cheapest_price:
                 cheapest_price = price
@@ -157,6 +177,7 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from API."""
         try:
+            stations: dict[Any, Any]
             if self.locations is not None:
                 stations = await self._fetch_locations(self.locations)
             else:
@@ -187,20 +208,55 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
 
         return self._build_stations(nearby_stations, all_pfs)
 
-    async def _fetch_locations(self, locations: list[dict[str, Any]]) -> dict[str, Any]:
-        """Fetch data for multiple locations and merge results."""
-        all_pfs = await self.hass.async_add_executor_job(self.client.get_all_pfs_prices)
+    async def _fetch_locations(self, locations: list[dict[str, Any]]) -> dict[Any, Any]:
+        """Fetch data for multiple locations and merge results.
 
-        all_stations: dict[str, Any] = {}
+        Station dict keys are (location_name, station_id) tuples so that
+        per-location sensors and cheapest-price lookups stay correct when
+        several locations see the same station.
+
+        Each location is only refetched once its own update_interval has
+        elapsed; skipped locations keep their previously fetched data.
+        """
+        if not locations:
+            return {}
+
+        now = time.monotonic()
+        previous: dict[Any, Any] = {}
+        if self.data and "stations" in self.data:
+            previous = self.data["stations"]
+
+        all_pfs: list[Any] | None = None
+        all_stations: dict[Any, Any] = {}
 
         for location in locations:
+            loc_name: str = location.get(CONF_NAME, "unnamed")
+
+            # Respect the per-location update interval. Locations fetched
+            # recently are skipped, keeping their previous data so sensors
+            # don't flap between coordinator refreshes.
+            interval_minutes: int = location.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+            last_fetch = self._location_last_fetch.get(loc_name)
+            if last_fetch is not None and (now - last_fetch) < interval_minutes * 60:
+                for key, sdata in previous.items():
+                    if isinstance(key, tuple) and key[0] == loc_name:
+                        all_stations.setdefault(key, sdata)
+                continue
+
             coords = _resolve_coordinates(self.hass, location)
             if coords is None:
                 _LOGGER.warning(
                     "Skipping location %s — unable to resolve coordinates",
-                    location.get(CONF_NAME, "unnamed"),
+                    loc_name,
                 )
                 continue
+
+            # Fetch prices lazily — only when at least one location is fetched
+            if all_pfs is None:
+                fetched_prices: list[Any] = await self.hass.async_add_executor_job(
+                    self.client.get_all_pfs_prices
+                )
+                all_pfs = fetched_prices
 
             lat, lon = coords
             radius = location.get(CONF_RADIUS, 5.0)
@@ -228,10 +284,14 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
                     if sdata["info"].get("is_supermarket", False)
                 }
 
-            # Merge — later locations don't overwrite earlier ones for same station
+            self._location_last_fetch[loc_name] = now
+
+            # Merge keyed by (location, station) — later locations don't
+            # overwrite earlier ones for the same pair
             for sid, sdata in stations.items():
-                if sid not in all_stations:
-                    all_stations[sid] = sdata
+                key = (loc_name, sid)
+                if key not in all_stations:
+                    all_stations[key] = sdata
 
         return all_stations
 
@@ -312,31 +372,38 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
 
         return stations
 
-    def _handle_stale_stations(self, current_stations: set[str]) -> None:
+    def _handle_stale_stations(self, current_stations: set[Any]) -> None:
         """Handle stale station removal with grace period."""
         # Increment counter for stations still missing
-        for station_id in list(self.missing_stations.keys()):
-            if station_id not in current_stations:
-                self.missing_stations[station_id] += 1
+        for station_key in list(self.missing_stations.keys()):
+            if station_key not in current_stations:
+                self.missing_stations[station_key] += 1
 
         # Track newly disappeared stations
         newly_disappeared = (
             self.previous_stations - current_stations - set(self.missing_stations.keys())
         )
-        for station_id in newly_disappeared:
-            self.missing_stations[station_id] = 1
+        for station_key in newly_disappeared:
+            self.missing_stations[station_key] = 1
 
         # Reset count for stations that reappeared
         reappeared = current_stations & set(self.missing_stations.keys())
-        for station_id in reappeared:
-            del self.missing_stations[station_id]
+        for station_key in reappeared:
+            del self.missing_stations[station_key]
 
         # Remove devices after 2 update cycles (grace period)
         if self.config_entry:
             device_registry = dr.async_get(self.hass)
-            for station_id, missing_count in list(self.missing_stations.items()):
+            for station_key, missing_count in list(self.missing_stations.items()):
                 if missing_count >= 2:
-                    device = device_registry.async_get_device(identifiers={(DOMAIN, station_id)})
+                    # Hub-mode devices are registered with
+                    # (DOMAIN, f"{location_name}_{station_id}") identifiers,
+                    # legacy devices with (DOMAIN, station_id)
+                    if isinstance(station_key, tuple):
+                        identifiers = {(DOMAIN, f"{station_key[0]}_{station_key[1]}")}
+                    else:
+                        identifiers = {(DOMAIN, station_key)}
+                    device = device_registry.async_get_device(identifiers=identifiers)
                     if device:
                         device_registry.async_update_device(
                             device_id=device.id,
@@ -344,9 +411,9 @@ class UKFuelFinderCoordinator(DataUpdateCoordinator):
                         )
                         _LOGGER.info(
                             "Removed stale station %s after %d update cycles",
-                            station_id,
+                            station_key,
                             missing_count,
                         )
-                    del self.missing_stations[station_id]
+                    del self.missing_stations[station_key]
 
         self.previous_stations = current_stations

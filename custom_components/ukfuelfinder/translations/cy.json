@@ -97,7 +97,8 @@
       "no_fuel_types": "Dewiswch o leiaf un math o danwydd i'w holrhain.",
       "missing_coordinates": "Mae angen lledred a hydred wrth ddefnyddio lleoliad statig.",
       "missing_entity_id": "Mae angen ID endid device_tracker ar gyfer lleoliadau deinamig.",
-      "unknown": "Bu gwall annisgwyl."
+      "unknown": "Bu gwall annisgwyl.",
+      "duplicate_name": "Mae lleoliad gyda'r enw hwn eisoes yn bodoli."
     },
     "abort": {
       "already_configured": "Mae'r cyfrif UK Fuel Finder hwn eisoes wedi'i ffurfweddu.",

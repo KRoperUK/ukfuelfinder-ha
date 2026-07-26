@@ -241,18 +241,24 @@ class UKFuelFinderConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 # or fall back to data updates
                 locations: list[dict[str, Any]] = entry.options.get(CONF_LOCATIONS, [])
                 if locations:
-                    # Update first location
-                    locations[0] = {
-                        **locations[0],
-                        CONF_LATITUDE: user_input[CONF_LATITUDE],
-                        CONF_LONGITUDE: user_input[CONF_LONGITUDE],
-                        CONF_RADIUS: user_input[CONF_RADIUS],
-                        CONF_UPDATE_INTERVAL: user_input[CONF_UPDATE_INTERVAL],
-                        CONF_FUEL_TYPES: user_input[CONF_FUEL_TYPES],
-                    }
+                    # Build a NEW list (and a new first-location dict) — mutating
+                    # the entry.options list in place makes HA's options-changed
+                    # check always return False, silently discarding the update
+                    # on restart.
+                    new_locations: list[dict[str, Any]] = [
+                        {
+                            **locations[0],
+                            CONF_LATITUDE: user_input[CONF_LATITUDE],
+                            CONF_LONGITUDE: user_input[CONF_LONGITUDE],
+                            CONF_RADIUS: user_input[CONF_RADIUS],
+                            CONF_UPDATE_INTERVAL: user_input[CONF_UPDATE_INTERVAL],
+                            CONF_FUEL_TYPES: user_input[CONF_FUEL_TYPES],
+                        },
+                        *locations[1:],
+                    ]
                     return self.async_update_reload_and_abort(
                         entry,
-                        options={CONF_LOCATIONS: locations},
+                        options={CONF_LOCATIONS: new_locations},
                     )
                 # Pure legacy entry (no locations yet): update data directly
                 return self.async_update_reload_and_abort(
@@ -403,6 +409,12 @@ class UKFuelFinderOptionsFlow(config_entries.OptionsFlow):
             if not user_input.get(CONF_FUEL_TYPES):
                 errors["base"] = "no_fuel_types"
 
+            # Validate: no duplicate location names (device identifiers collide)
+            locations: list[dict[str, Any]] = list(self._entry.options.get(CONF_LOCATIONS, []))
+            existing_names = {loc.get(CONF_NAME) for loc in locations}
+            if user_input[CONF_NAME] in existing_names:
+                errors["base"] = "duplicate_name"
+
             if not errors:
                 location: dict[str, Any] = {
                     CONF_NAME: user_input[CONF_NAME],
@@ -419,12 +431,14 @@ class UKFuelFinderOptionsFlow(config_entries.OptionsFlow):
                 else:
                     location["entity_id"] = user_input.get("entity_id", "")
 
-                locations: list[dict[str, Any]] = list(self._entry.options.get(CONF_LOCATIONS, []))
-                locations.append(location)
+                new_locations: list[dict[str, Any]] = list(
+                    self._entry.options.get(CONF_LOCATIONS, [])
+                )
+                new_locations.append(location)
 
                 return self.async_create_entry(
                     title="",
-                    data={CONF_LOCATIONS: locations},
+                    data={CONF_LOCATIONS: new_locations},
                 )
 
         schema = _build_location_schema()

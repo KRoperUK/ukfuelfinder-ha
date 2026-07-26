@@ -97,7 +97,8 @@
       "no_fuel_types": "Selecciona al menos un tipo de combustible a seguir.",
       "missing_coordinates": "Se requieren latitud y longitud al usar una ubicación estática.",
       "missing_entity_id": "Se requiere una entidad device_tracker para ubicaciones dinámicas.",
-      "unknown": "Se produjo un error inesperado."
+      "unknown": "Se produjo un error inesperado.",
+      "duplicate_name": "Ya existe una ubicación con este nombre."
     },
     "abort": {
       "already_configured": "Esta cuenta de UK Fuel Finder ya está configurada.",
