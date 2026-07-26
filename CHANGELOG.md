@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/KRoperUK/ukfuelfinder-ha/compare/v1.5.2...v1.6.0) (2026-07-26)
+
+
+### Features
+
+* hub + locations, auto-discover, translations, tests (rebased) ([#4](https://github.com/KRoperUK/ukfuelfinder-ha/issues/4)) ([db894b5](https://github.com/KRoperUK/ukfuelfinder-ha/commit/db894b528727ebcc1f910c33e74a54449bef7c5b))
+* price alerts, brand/amenity filters, price trend ([#5](https://github.com/KRoperUK/ukfuelfinder-ha/issues/5)) ([204fc0a](https://github.com/KRoperUK/ukfuelfinder-ha/commit/204fc0a334bc7743d3a3ba45d486858eff5337c4))
+
+
+### Bug Fixes
+
+* diagnostics, duplicate name validation, options translations ([#14](https://github.com/KRoperUK/ukfuelfinder-ha/issues/14)) ([081f8fc](https://github.com/KRoperUK/ukfuelfinder-ha/commit/081f8fc927e11ec791ab75c3fb8a0e493607954d))
+
 ## [1.5.2] - 2026-02-27
 
 ### Fixed
