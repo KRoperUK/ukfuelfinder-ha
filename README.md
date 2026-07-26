@@ -13,16 +13,16 @@ A Home Assistant custom component that integrates with the UK Government Fuel Fi
 
 ## Features
 
-- 🔍 **Automatic Station Discovery** - Finds fuel stations within your specified radius
-- 💰 **Real-time Price Monitoring** - Track fuel prices for multiple fuel types
-- 🎯 **Cheapest Fuel Sensors** - Automatically find the cheapest price for each fuel type
-- 🏪 **Rich Station Metadata** - Supermarket, motorway, amenities, opening times, and more
-- ⚙️ **Fuel Type Filtering** - Choose which fuel types to track
-- 📊 **Historical Data** - Graph price trends over time
-- 🗺️ **Map Integration** - View stations and cheapest prices on your Home Assistant map
-- 🔄 **Automatic Updates** - Configurable update intervals (5-1440 minutes)
-- 🔐 **Secure Credential Management** - Easy reauthentication when credentials change
-- ⚙️ **Reconfigurable** - Change location, radius, and fuel types without re-adding
+- 🔍 **Automatic Station Discovery** — Finds fuel stations within your specified radius
+- 💰 **Real-time Price Monitoring** — Track fuel prices for multiple fuel types
+- 🎯 **Cheapest Fuel Sensors** — Automatically find the cheapest price for each fuel type
+- 📍 **Multi-Location Support** — Track prices around Home, Work, and dynamic mobile locations
+- 📱 **Device Tracker Integration** — Follow your phone's location for on-the-go fuel prices
+- 🏪 **Rich Station Metadata** — Supermarket, motorway, amenities, opening times, and more
+- ⚙️ **Per-Location Fuel Filtering** — Different fuel types per location
+- 📊 **Historical Data** — Graph price trends over time
+- 🗺️ **Map Integration** — View stations and cheapest prices on your Home Assistant map
+- 🔄 **Automatic Updates** — Configurable update intervals per location (5-1440 minutes)
 
 ## Supported Fuel Types
 
@@ -57,31 +57,30 @@ A Home Assistant custom component that integrates with the UK Government Fuel Fi
 ### Prerequisites
 
 - UK Fuel Finder API credentials from [developer.fuel-finder.service.gov.uk](https://www.developer.fuel-finder.service.gov.uk)
-- Your home location coordinates (latitude and longitude)
 
 ### Setup
 
 1. Go to **Settings** → **Devices & Services**
 2. Click **Add Integration**
 3. Search for "UK Fuel Finder"
-4. Enter your configuration:
-   - **Client ID**: Your API client ID
-   - **Client Secret**: Your API client secret
-   - **Environment**: Choose "production" or "test"
-   - **Latitude**: Your location latitude
-   - **Longitude**: Your location longitude
-   - **Search Radius**: Distance in kilometers (0.1-50 km)
-   - **Update Interval**: How often to fetch prices (5-1440 minutes)
-   - **Fuel Types**: Select which fuel types to track (defaults to all)
+4. Enter your **API credentials** (Client ID, Client Secret, Environment) — your Home location is automatically added
+5. Click **Submit** — the integration creates a hub entry and sensors for stations near your Home
 
-### Reconfiguration
+### Adding More Locations
 
-You can change your settings at any time:
+1. Find "UK Fuel Finder" in Devices & Services and click **Configure**
+2. Choose **Add Location** to enter coordinates manually, or **Add from Discovered** to pick from:
+   - 📍 Your **Home Assistant home location**
+   - 📱 Any installed **device_tracker** entities (mobile app, Owntracks, etc.)
+3. Each location gets its own set of station sensors and cheapest-price sensors
 
-1. Go to **Settings** → **Devices & Services**
-2. Find "UK Fuel Finder" and click **Configure**
-3. Update any settings (location, radius, update interval, fuel types)
-4. Click **Submit** - the integration will reload with new settings
+### Dynamic Locations (Device Tracker)
+
+When you add a location with the **Device tracker** source, the integration reads the entity's `latitude`/`longitude` attributes at every update interval. Fuel prices update as you move — no manual reconfiguration needed.
+
+### Reauthentication
+
+If your API credentials change, click **Reauthenticate** on the integration card to update them.
 
 ## Usage
 
@@ -89,7 +88,7 @@ You can change your settings at any time:
 
 The integration creates sensor entities for each fuel type at each station:
 
-- **Entity ID Format**: `sensor.ukfuelfinder_{station_id}_{fuel_type}`
+- **Entity ID Format**: `sensor.{location}_{station_id}_{fuel_type}`
 - **State**: Fuel price in pounds (GBP)
 - **Unit**: GBP (British Pounds)
 - **State Class**: `measurement` (enables long-term statistics)
@@ -111,7 +110,7 @@ The integration creates sensor entities for each fuel type at each station:
 
 For each selected fuel type, a "cheapest" sensor shows the lowest price in your area:
 
-- **Entity ID Format**: `sensor.ukfuelfinder_cheapest_{fuel_type}`
+- **Entity ID Format**: `sensor.{location}_cheapest_{fuel_type}`
 - **State**: Lowest price in pounds (GBP)
 - **Attributes**: All details of the station with the cheapest price (including price_last_updated)
 - **Map Integration**: Shows the cheapest station location on maps

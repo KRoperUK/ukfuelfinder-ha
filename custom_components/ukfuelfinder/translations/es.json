@@ -3,26 +3,16 @@
     "step": {
       "user": {
         "title": "Configuración de UK Fuel Finder",
-        "description": "Introduce tus credenciales de la API de UK Fuel Finder y la configuración de ubicación.",
+        "description": "Introduce tus credenciales de la API.\n\nObtén tu Client ID y Client Secret en:\n[Portal de desarrolladores de Fuel Finder]({developer_portal_url})",
         "data": {
           "client_id": "ID de cliente",
           "client_secret": "Secreto de cliente",
-          "environment": "Entorno",
-          "latitude": "Latitud",
-          "longitude": "Longitud",
-          "radius": "Radio de búsqueda (km)",
-          "update_interval": "Intervalo de actualización (minutos)",
-          "fuel_types": "Tipos de combustible a seguir"
+          "environment": "Entorno"
         },
         "data_description": {
           "client_id": "Del portal para desarrolladores de Fuel Finder.",
           "client_secret": "Del portal para desarrolladores de Fuel Finder. Se almacena localmente.",
-          "environment": "Usa \"production\" salvo que tengas credenciales del entorno de pruebas.",
-          "latitude": "Por defecto, la ubicación de tu Home Assistant.",
-          "longitude": "Por defecto, la ubicación de tu Home Assistant.",
-          "radius": "Distancia de búsqueda de gasolineras, 0,1-50 km.",
-          "update_interval": "Frecuencia de actualización de los precios, 5-1440 minutos.",
-          "fuel_types": "Solo se crean sensores para los tipos de combustible seleccionados."
+          "environment": "Usa \"production\" salvo que tengas credenciales del entorno de pruebas."
         }
       },
       "reauth_confirm": {
@@ -39,7 +29,7 @@
       },
       "reconfigure": {
         "title": "Reconfigurar UK Fuel Finder",
-        "description": "Actualiza la ubicación, los ajustes de búsqueda y los tipos de combustible.",
+        "description": "Actualiza los ajustes de búsqueda y tipos de combustible.",
         "data": {
           "latitude": "Latitud",
           "longitude": "Longitud",
@@ -54,17 +44,76 @@
           "update_interval": "Frecuencia de actualización de los precios, 5-1440 minutos.",
           "fuel_types": "Solo se crean sensores para los tipos de combustible seleccionados."
         }
+      },
+      "add_from_discovered": {
+        "title": "Añadir ubicación descubierta",
+        "description": "Selecciona una ubicación detectada o introduce una manualmente.",
+        "data": {
+          "discovered_location": "Ubicación descubierta"
+        },
+        "data_description": {
+          "discovered_location": "📍 = coordenadas fijas, 📱 = device tracker. Elige una o «Introducir manualmente…»."
+        }
+      },
+      "add_location": {
+        "title": "Añadir ubicación",
+        "description": "Define una ubicación para buscar precios de combustible.\n\n**Estática**: coordenadas fijas.\n**Device Tracker**: selecciona una entidad device_tracker (p.ej. teléfono móvil) — la ubicación se actualiza automáticamente.",
+        "data": {
+          "name": "Nombre de la ubicación",
+          "location_source": "Fuente de ubicación",
+          "latitude": "Latitud",
+          "longitude": "Longitud",
+          "radius": "Radio de búsqueda (km)",
+          "update_interval": "Intervalo de actualización (minutos)",
+          "fuel_types": "Tipos de combustible a seguir",
+          "entity_id": "Entidad Device Tracker",
+          "exclude_motorway": "Exclude Motorway Stations",
+          "supermarket_only": "Supermarket Stations Only"
+        },
+        "data_description": {
+          "name": "Un nombre descriptivo para esta ubicación (p.ej. \"Casa\", \"Trabajo\").",
+          "location_source": "\"Static\" para coordenadas fijas, \"Device Tracker\" para seguir un dispositivo móvil.",
+          "latitude": "Requerido con fuente de ubicación estática.",
+          "longitude": "Requerido con fuente de ubicación estática.",
+          "radius": "Distancia de búsqueda de gasolineras, 0,1-50 km.",
+          "update_interval": "Frecuencia de actualización de los precios, 5-1440 minutos.",
+          "fuel_types": "Solo se crean sensores para los tipos de combustible seleccionados.",
+          "entity_id": "p.ej. device_tracker.mobile_app. Dejar vacío para ubicaciones estáticas.",
+          "exclude_motorway": "Hide stations on motorways.",
+          "supermarket_only": "Only show stations at supermarkets."
+        }
+      },
+      "remove_location": {
+        "title": "Eliminar ubicación",
+        "description": "Selecciona una ubicación para eliminar.",
+        "data": {
+          "location_index": "Ubicación"
+        }
       }
     },
     "error": {
       "cannot_connect": "No se pudo conectar con la API de UK Fuel Finder. Comprueba tus credenciales.",
       "invalid_auth": "Credenciales de autenticación no válidas.",
       "no_fuel_types": "Selecciona al menos un tipo de combustible a seguir.",
+      "missing_coordinates": "Se requieren latitud y longitud al usar una ubicación estática.",
+      "missing_entity_id": "Se requiere una entidad device_tracker para ubicaciones dinámicas.",
       "unknown": "Se produjo un error inesperado."
     },
     "abort": {
       "already_configured": "Esta cuenta de UK Fuel Finder ya está configurada.",
+      "no_locations": "Aún no se ha añadido ninguna ubicación.",
       "reconfigure_successful": "Configuración actualizada correctamente."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "menu_options": {
+          "add_location": "Añadir ubicación",
+          "add_from_discovered": "Añadir desde descubrimiento",
+          "remove_location": "Eliminar ubicación"
+        }
+      }
     }
   }
 }

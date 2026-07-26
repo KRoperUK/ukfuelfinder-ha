@@ -6,14 +6,14 @@
   ],
   "config_flow": true,
   "documentation": "https://github.com/KRoperUK/ukfuelfinder-ha",
-  "integration_type": "service",
+  "integration_type": "hub",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/KRoperUK/ukfuelfinder-ha/issues",
   "loggers": [
     "ukfuelfinder"
   ],
   "requirements": [
-    "ukfuelfinder>=3.0.0"
+    "ukfuelfinder-kroper>=3.0.0"
   ],
   "version": "1.5.2"
 }

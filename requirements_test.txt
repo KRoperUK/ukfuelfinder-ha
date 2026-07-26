@@ -11,4 +11,4 @@ ruff==0.16.0
 mypy==2.3.0
 
 # Component dependency (keep in sync with manifest.json requirements)
-ukfuelfinder==3.0.0
+ukfuelfinder-kroper==3.0.0

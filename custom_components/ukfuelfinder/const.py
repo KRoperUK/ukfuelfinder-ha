@@ -1,5 +1,7 @@
 """Constants for UK Fuel Finder integration."""
 
+from __future__ import annotations
+
 DOMAIN = "ukfuelfinder"
 
 # Managed by release-please (and rewritten by dev builds) — keep the marker.
@@ -10,11 +12,15 @@ CONF_ENVIRONMENT = "environment"
 CONF_RADIUS = "radius"
 CONF_UPDATE_INTERVAL = "update_interval"
 CONF_FUEL_TYPES = "fuel_types"
+CONF_LOCATIONS = "locations"
+CONF_NAME = "name"
+CONF_LOCATION_SOURCE = "location_source"
 
 # Defaults
 DEFAULT_ENVIRONMENT = "production"
 DEFAULT_RADIUS = 5.0
 DEFAULT_UPDATE_INTERVAL = 30
+DEFAULT_LOCATION_SOURCE = "static"
 
 # Limits
 MIN_RADIUS = 0.1
@@ -34,6 +40,11 @@ FUEL_TYPES = [
     "b7_premium",  # Premium diesel
     "lpg",  # Liquefied petroleum gas
 ]
+
+# Display labels for fuel types (API key → user-friendly name)
+FUEL_TYPE_LABELS: dict[str, str] = {
+    ft: ft.replace("_", " ").title().replace("Lpg", "LPG") for ft in FUEL_TYPES
+}
 
 # Attribution
 ATTRIBUTION = "Data provided by UK Government Fuel Finder"
