@@ -12,11 +12,13 @@ from homeassistant.core import HomeAssistant
 
 from .const import (
     CONF_ENVIRONMENT,
+    CONF_EXCLUDE_MOTORWAY,
     CONF_FUEL_TYPES,
     CONF_LOCATION_SOURCE,
     CONF_LOCATIONS,
     CONF_NAME,
     CONF_RADIUS,
+    CONF_SUPERMARKET_ONLY,
     CONF_UPDATE_INTERVAL,
     DEFAULT_ENVIRONMENT,
     DEFAULT_LOCATION_SOURCE,
@@ -61,6 +63,8 @@ def _build_location_schema(
             vol.Optional(CONF_FUEL_TYPES, default=default_fuel_types): cv.multi_select(
                 FUEL_TYPE_LABELS
             ),
+            vol.Optional(CONF_EXCLUDE_MOTORWAY, default=False): bool,
+            vol.Optional(CONF_SUPERMARKET_ONLY, default=False): bool,
         }
     )
 
@@ -343,6 +347,8 @@ class UKFuelFinderOptionsFlow(config_entries.OptionsFlow):
                         CONF_RADIUS: DEFAULT_RADIUS,
                         CONF_UPDATE_INTERVAL: DEFAULT_UPDATE_INTERVAL,
                         CONF_FUEL_TYPES: FUEL_TYPES,
+                        CONF_EXCLUDE_MOTORWAY: False,
+                        CONF_SUPERMARKET_ONLY: False,
                     }
                     if loc[CONF_LOCATION_SOURCE] == "static":
                         location[CONF_LATITUDE] = loc[CONF_LATITUDE]
@@ -404,6 +410,8 @@ class UKFuelFinderOptionsFlow(config_entries.OptionsFlow):
                     CONF_RADIUS: user_input[CONF_RADIUS],
                     CONF_UPDATE_INTERVAL: user_input[CONF_UPDATE_INTERVAL],
                     CONF_FUEL_TYPES: user_input[CONF_FUEL_TYPES],
+                    CONF_EXCLUDE_MOTORWAY: user_input.get(CONF_EXCLUDE_MOTORWAY, False),
+                    CONF_SUPERMARKET_ONLY: user_input.get(CONF_SUPERMARKET_ONLY, False),
                 }
                 if user_input[CONF_LOCATION_SOURCE] == "static":
                     location[CONF_LATITUDE] = user_input[CONF_LATITUDE]

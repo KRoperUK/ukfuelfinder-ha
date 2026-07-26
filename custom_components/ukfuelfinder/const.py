@@ -8,13 +8,16 @@ DOMAIN = "ukfuelfinder"
 VERSION = "1.5.2"  # x-release-please-version
 
 # Configuration keys
+CONF_ALERT_THRESHOLDS = "alert_thresholds"
 CONF_ENVIRONMENT = "environment"
-CONF_RADIUS = "radius"
-CONF_UPDATE_INTERVAL = "update_interval"
+CONF_EXCLUDE_MOTORWAY = "exclude_motorway"
 CONF_FUEL_TYPES = "fuel_types"
+CONF_LOCATION_SOURCE = "location_source"
 CONF_LOCATIONS = "locations"
 CONF_NAME = "name"
-CONF_LOCATION_SOURCE = "location_source"
+CONF_RADIUS = "radius"
+CONF_SUPERMARKET_ONLY = "supermarket_only"
+CONF_UPDATE_INTERVAL = "update_interval"
 
 # Defaults
 DEFAULT_ENVIRONMENT = "production"
