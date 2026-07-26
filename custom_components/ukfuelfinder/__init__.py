@@ -124,10 +124,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = UKFuelFinderCoordinator(hass, entry_data)
     coordinator.config_entry = entry
 
-    # Attach locations if present (new-style entries)
+    # Attach locations (new-style hub entries). Always set — even when the
+    # list is empty — so the coordinator stays on the hub path and returns
+    # empty data instead of crashing on the legacy path (which requires
+    # lat/lon in entry.data) when all locations have been removed.
     locations: list[dict[str, Any]] = entry.options.get(CONF_LOCATIONS, [])
-    if locations:
-        coordinator.locations = locations
+    coordinator.locations = locations
 
     # Store client separately for reuse
     from ukfuelfinder import FuelFinderClient
