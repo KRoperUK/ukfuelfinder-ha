@@ -66,7 +66,9 @@
           "radius": "Radiws chwilio (km)",
           "update_interval": "Cyfnod diweddaru (munudau)",
           "fuel_types": "Mathau o danwydd i'w holrhain",
-          "entity_id": "Endid Device Tracker"
+          "entity_id": "Endid Device Tracker",
+          "exclude_motorway": "Exclude Motorway Stations",
+          "supermarket_only": "Supermarket Stations Only"
         },
         "data_description": {
           "name": "Enw cyfeillgar ar gyfer y lleoliad hwn (e.e. \"Cartref\", \"Gwaith\").",
@@ -76,7 +78,9 @@
           "radius": "Pa mor bell i chwilio am orsafoedd, 0.1-50 km.",
           "update_interval": "Pa mor aml y caiff prisiau eu diweddaru, 5-1440 munud.",
           "fuel_types": "Dim ond ar gyfer y mathau o danwydd a ddewiswyd y crëir synwyryddion.",
-          "entity_id": "e.e. device_tracker.mobile_app. Gadewch yn wag ar gyfer lleoliadau statig."
+          "entity_id": "e.e. device_tracker.mobile_app. Gadewch yn wag ar gyfer lleoliadau statig.",
+          "exclude_motorway": "Hide stations on motorways.",
+          "supermarket_only": "Only show stations at supermarkets."
         }
       },
       "remove_location": {

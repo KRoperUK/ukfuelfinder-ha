@@ -66,7 +66,9 @@
           "radius": "Rayon de recherche (km)",
           "update_interval": "Intervalle de mise à jour (minutes)",
           "fuel_types": "Types de carburant à suivre",
-          "entity_id": "Entité Device Tracker"
+          "entity_id": "Entité Device Tracker",
+          "exclude_motorway": "Exclude Motorway Stations",
+          "supermarket_only": "Supermarket Stations Only"
         },
         "data_description": {
           "name": "Un nom descriptif pour cet emplacement (ex. \"Maison\", \"Travail\").",
@@ -76,7 +78,9 @@
           "radius": "Distance de recherche des stations-service, 0,1 à 50 km.",
           "update_interval": "Fréquence d'actualisation des prix, 5 à 1440 minutes.",
           "fuel_types": "Des capteurs ne sont créés que pour les types de carburant sélectionnés.",
-          "entity_id": "ex. device_tracker.mobile_app. Laisser vide pour les emplacements statiques."
+          "entity_id": "ex. device_tracker.mobile_app. Laisser vide pour les emplacements statiques.",
+          "exclude_motorway": "Hide stations on motorways.",
+          "supermarket_only": "Only show stations at supermarkets."
         }
       },
       "remove_location": {
