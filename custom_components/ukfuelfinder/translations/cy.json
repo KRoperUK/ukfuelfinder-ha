@@ -67,8 +67,8 @@
           "update_interval": "Cyfnod diweddaru (munudau)",
           "fuel_types": "Mathau o danwydd i'w holrhain",
           "entity_id": "Endid Device Tracker",
-          "exclude_motorway": "Exclude Motorway Stations",
-          "supermarket_only": "Supermarket Stations Only"
+          "exclude_motorway": "Eithrio gorsafoedd traffordd",
+          "supermarket_only": "Gorsafoedd archfarchnad yn unig"
         },
         "data_description": {
           "name": "Enw cyfeillgar ar gyfer y lleoliad hwn (e.e. \"Cartref\", \"Gwaith\").",
@@ -79,8 +79,8 @@
           "update_interval": "Pa mor aml y caiff prisiau eu diweddaru, 5-1440 munud.",
           "fuel_types": "Dim ond ar gyfer y mathau o danwydd a ddewiswyd y crëir synwyryddion.",
           "entity_id": "e.e. device_tracker.mobile_app. Gadewch yn wag ar gyfer lleoliadau statig.",
-          "exclude_motorway": "Hide stations on motorways.",
-          "supermarket_only": "Only show stations at supermarkets."
+          "exclude_motorway": "Cuddio gorsafoedd gwasanaeth traffordd o'r canlyniadau.",
+          "supermarket_only": "Dangos gorsafoedd archfarchnadoedd yn unig (e.e. Tesco, ASDA, Sainsbury\u2019s)."
         }
       },
       "remove_location": {

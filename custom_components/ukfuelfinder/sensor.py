@@ -313,6 +313,8 @@ class UKFuelFinderCheapestSensor(CoordinatorEntity[UKFuelFinderCoordinator], Sen
             "temporary_closure": cheapest.get("temporary_closure"),
             "permanent_closure": cheapest.get("permanent_closure"),
             "attribution": ATTRIBUTION,
+            "price_trend": cheapest.get("price_trend"),
+            "previous_price_pence": cheapest.get("previous_price_pence"),
         }
 
     @property
